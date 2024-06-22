@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+// import Dashboard from '../components/Dashboard';
+// import ManagerDashboard from '../components/ManagerDashboard';
+// import TechnicianDashboard from '../components/TechnicianDashboard';
+// import UserDashboard from '../components/UserDashboard';
+import PublicRoute from "./routes-components/PublicRoute";
+import PrivateRoute from "./routes-components/PrivateRoute";
+import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import { DashboardSelect } from "./utils";
+
+const App = () => {
+  const userLoggedIn = false;
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Router>
+      <Routes>
+        {/* <PublicRoute restricted={false} component={Login} path="/login" exact />
+        <PublicRoute restricted={false} component={Signup} path="/signup" exact />
+        <PublicRoute restricted={false} component={Login} path="/" exact /> */}
 
-export default App
+        {/* {/* <PrivateRoute component={Dashboard} path="/dashboard" exact /> */}
+        {/* <PrivateRoute component={ManagerDashboard} path="/manager-dashboard" roles={['manager']} />
+        <PrivateRoute component={TechnicianDashboard} path="/technician-dashboard" roles={['technician']} />
+        <PrivateRoute component={UserDashboard} path="/user-dashboard" roles={['user']} />  */}
+
+        {/* Add a default route for handling 404 errors */}
+        <Route component={<NotFound />} path="*" />
+        <Route
+          element={userLoggedIn ?DashboardSelect("") : <Login />}
+          path="/"
+        />
+        <Route element={<Signup />} path="/signup" />
+        <Route element={<Login />} path="/login" />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
