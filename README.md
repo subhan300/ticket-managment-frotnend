@@ -12,7 +12,7 @@ Currently, two official plugins are available:
 
 * vercel.json file rewrite code help to make routing work properly in live'
 
-1) clone project from github link Link:
+1) clone project from github link Link: https://github.com/subhan300/ticket-managment-frotnend.git
 
 2- npm install
 

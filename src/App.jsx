@@ -11,9 +11,10 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { DashboardSelect } from "./utils";
+import { ADMIN } from "./helper/constants";
 
 const App = () => {
-  const userLoggedIn = false;
+  const userLoggedIn = true;
 
   return (
     <Router>
@@ -30,7 +31,7 @@ const App = () => {
         {/* Add a default route for handling 404 errors */}
         <Route component={<NotFound />} path="*" />
         <Route
-          element={userLoggedIn ?DashboardSelect("") : <Login />}
+          element={userLoggedIn ?DashboardSelect(ADMIN) : <Login />}
           path="/"
         />
         <Route element={<Signup />} path="/signup" />
