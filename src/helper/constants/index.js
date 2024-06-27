@@ -9,5 +9,5 @@ export const MANAGER='MANAGER'
 export const ADMIN='ADMIN'
 export const widthGetFullScreen=768
 export const sideBarWidthCons="200px"
-export const minSideWidth="100px"
-export const maxSideWidth="200px"
+export const minSideWidth="100"
+export const maxSideWidth="200"

@@ -20,10 +20,10 @@ const useSidebarStore = create((set) => ({
   }),
   setInitialWidth: (width) => {
     
-    if (width < 768) {
+    if (width <= 768) {
       set({ layoutWidth: { sidebarWidth: '0%', mainContentWidth: '100%' } });
     } else {
-      set({ layoutWidth: { sidebarWidth: sideBarWidthCons, mainContentWidth: '100%' } });
+    set({ layoutWidth: { sidebarWidth: sideBarWidthCons, mainContentWidth: '100%' } });
     }
   }
 }));

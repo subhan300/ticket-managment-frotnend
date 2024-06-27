@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 export const SideBarStyled = styled.div`
   /* .sidebar { */
     /* width: ${(props) => `${props.sidebarWidth} !important`}; */
-    border: 1px solid green;
+     border:1px solid rgb(240, 240, 240);
     position: fixed;
     height: 100%;
     cursor: pointer;

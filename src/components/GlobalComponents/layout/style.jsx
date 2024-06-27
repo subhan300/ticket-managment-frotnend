@@ -6,6 +6,7 @@ export const BoxContent=styled(Box)`
    position: absolute;
     right: 0;
     top: 0;
+    
     /* width: ${(props) => `calc(100% - ${props.contentWidth}) !important`}; */
     transition: width 0.3s ease-out;
     /* margin-left: ${(props) => `${props.contentWidth}`}; */

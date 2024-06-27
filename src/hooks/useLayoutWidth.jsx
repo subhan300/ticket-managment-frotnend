@@ -10,7 +10,7 @@ const useLayoutWidth = () => {
     setInitialWidth(width);
   }, [width]);
 
-  return layoutWidth;
+  return layoutWidth.sidebarWidth;
 };
 
 export default useLayoutWidth;

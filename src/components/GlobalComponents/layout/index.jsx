@@ -1,4 +1,4 @@
-import React, { useContext, useSyncExternalStore } from "react";
+import React from "react";
 
 import { BottomBarBox, BoxContent, LayoutStyle } from "./style";
 import useSidebarStore from "../../../store/sidebarStore";
@@ -10,16 +10,9 @@ import useLayoutWidth from "../../../hooks/useLayoutWidth";
 
 export default function Layout({ children }) {
   const { layoutWidth } = useSidebarStore();
-  const layoutSideWidth = useLayoutWidth();
-  console.log(
-    "--------------",
-    layoutWidth.sidebarWidth,
-    "hookwidth",
-    layoutSideWidth
-  );
+  useLayoutWidth();
 
   return (
-    // <LayoutStyle>
     <Box className="dashboard_container" sx={{ width: "100%" }}>
       <SideBar />
       <BoxContent
@@ -36,6 +29,5 @@ export default function Layout({ children }) {
         <BottomBar />
       </BottomBarBox>
     </Box>
-    // </LayoutStyle>
   );
 }
