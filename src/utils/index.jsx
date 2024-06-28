@@ -1,18 +1,36 @@
-import Layout from "../components/GlobalComponents/layout";
+import { TechnicianSideBar, adminSideBar, managerSideBar, userSideBar } from "../data/sidebar";
 import { ADMIN, HOUSEKEEPING, MANAGER, TECHNICIAN } from "../helper/constants";
 import Admin from "../pages/Admin";
+import Manager from "../pages/Manager";
+import Technician from "../pages/Technician";
+import User from "../pages/User";
 
 export const DashboardSelect = (role) => {
   switch (role) {
     case ADMIN:
       return <Admin />;
     case TECHNICIAN:
-      return <h1>TECHNICIAN</h1>;
+      return <Technician />;
     case MANAGER:
-      return <h1>MANAGER</h1>;
+      return <Manager />;
     case HOUSEKEEPING:
       return <h1>hOUSE KEEPING</h1>;
     default:
-      return <h1>User</h1>;
+      return <User />;
+  }
+};
+
+export const sideBarSelect = (role) => {
+  switch (role) {
+    case ADMIN:
+      return adminSideBar();
+    case TECHNICIAN:
+      return TechnicianSideBar();
+    case MANAGER:
+      return managerSideBar();
+    // case HOUSEKEEPING:
+    //   return hous;
+    default:
+      return userSideBar();
   }
 };

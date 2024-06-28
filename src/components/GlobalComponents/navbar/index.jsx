@@ -1,46 +1,31 @@
 import * as React from "react";
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
 import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import useLayoutWidth from "../../../hooks/useLayoutWidth";
-import { Avatar } from "@mui/material";
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
+import { Avatar } from "@mui/material";
+import PropTypes from 'prop-types';
+
 
 const AppBarStyled = styled(AppBar, {
-  shouldForwardProp: (prop) => prop !== "open" || prop !== "drawerWidth",
-})(({ theme,drawerWidth }) => ({
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
+})(({ theme, drawerWidth }) => ({
   background: "white",
   // border:"1px solid red",
   boxShadow: "none",
   height: "75px",
   color: "black",
   padding: "0 8px",
+ 
   borderBottom: "1px solid rgb(240, 240, 240)",
   borderLeft: "1px solid rgb(240, 240, 240)",
 
@@ -53,12 +38,11 @@ const AppBarStyled = styled(AppBar, {
   [theme.breakpoints.down("sm")]: {
     marginLeft: 0,
     width: '100%',
- },
+  },
 }));
 export default function Navbar({ drawerWidth, open }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const layoutWidth = useLayoutWidth();
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -153,12 +137,13 @@ export default function Navbar({ drawerWidth, open }) {
     </Menu>
   );
   return (
-    <Box sx={{ flexGrow: 1, position: "relative" }}>
+    // <Box sx={{ flexGrow: 1, position: "relative" }}>
+    <>
       <AppBarStyled
         drawerWidth={drawerWidth}
         position="fixed"
         open={open}
-        // sx={{left:`calc(${layoutWidth} + 0px)`,transition: '0.3s ease-out',  width: `calc(100% - ${layoutWidth})`}}
+      // sx={{left:`calc(${layoutWidth} + 0px)`,transition: '0.3s ease-out',  width: `calc(100% - ${layoutWidth})`}}
       >
         <Toolbar
           sx={{
@@ -180,7 +165,7 @@ export default function Navbar({ drawerWidth, open }) {
               style={{ height: "30px" }}
               src={"https://www.brandbucket.com/images7/head_logo2s.png?"}
             ></img>
-        {/* <Typography variant="h2">Admin Dashboard</Typography> */}
+            {/* <Typography variant="h2">Admin Dashboard</Typography> */}
           </div>
           <Box sx={{ width: "auto", display: "flex", alignItems: "center" }}>
             <Box sx={{ flexGrow: 1 }} />
@@ -243,6 +228,12 @@ export default function Navbar({ drawerWidth, open }) {
       </AppBarStyled>
       {renderMobileMenu}
       {renderMenu}
-    </Box>
+    {/* </Box> */}
+    </>
   );
+}
+
+Navbar.propTypes = {
+  drawerWidth: PropTypes.string,
+   open: PropTypes.bool
 }
