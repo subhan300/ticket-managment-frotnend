@@ -11,9 +11,11 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
-
+import LogoutIcon from '@mui/icons-material/Logout';
 import { Avatar } from "@mui/material";
 import PropTypes from 'prop-types';
+import useStore from "../../../store";
+import useCustomNavigate from "../../../hooks/useCustomNavigate";
 
 
 const AppBarStyled = styled(AppBar, {
@@ -45,7 +47,9 @@ export default function Navbar({ drawerWidth, open }) {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
+  const setLogOut = useStore((state) => state.setLogOut);
+  const user=useStore(state=>state.user)
+ const navigate=useCustomNavigate()
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -62,27 +66,30 @@ export default function Navbar({ drawerWidth, open }) {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+  const handleLogOut=()=>{
+    // debugger
+    setLogOut()
+    navigate("/login")
 
-  const menuId = "primary-search-account-menu";
+    
+  }
+
+  const menuId = "account-menu";
+  const id="basic-button"
   const renderMenu = (
     <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
+    id={menuId}
+    anchorEl={anchorEl}
+    open={isMenuOpen}
+    onClose={handleMenuClose}
+    MenuListProps={{
+      'aria-labelledby': id,
+    }}
+  >
+    {/* <MenuItem onClick={handleMenuClose}>Profile</MenuItem> */}
+    <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+    <MenuItem onClick={handleLogOut}>Logout <LogoutIcon sx={{ml:3}} /></MenuItem>
+  </Menu>
   );
 
   const mobileMenuId = "primary-search-account-menu-mobile";
@@ -152,14 +159,7 @@ export default function Navbar({ drawerWidth, open }) {
             alignItems: "center",
           }}
         >
-          {/* <Typography
-            sx={{width:"auto",}}
-            variant="h5"
-            noWrap
-            // component="div"
-          >
-            Ticket Management
-          </Typography> */}
+         
           <div>
             <img
               style={{ height: "30px" }}
@@ -169,7 +169,8 @@ export default function Navbar({ drawerWidth, open }) {
           </div>
           <Box sx={{ width: "auto", display: "flex", alignItems: "center" }}>
             <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <Box sx={{ display: { xs: "none", md: "flex" ,position:"relative"} }}>
+           
               <IconButton
                 size="large"
                 aria-label="show 17 new notifications"
@@ -182,13 +183,15 @@ export default function Navbar({ drawerWidth, open }) {
               <IconButton
                 size="large"
                 edge="end"
+                id={id}
                 aria-label="account of current user"
                 aria-controls={menuId}
                 aria-haspopup="true"
                 onClick={handleProfileMenuOpen}
                 color="inherit"
+                sx={{position:"relative",}}
               >
-                {/* <AccountCircle /> */}
+                
                 <Avatar
                   sx={{ width: "50px", height: "50px" }}
                   alt="Remy Sharp"
@@ -199,14 +202,15 @@ export default function Navbar({ drawerWidth, open }) {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    gap: "8px",
+                    gap: "4px",
+                    marginLeft:"6px"
                   }}
                 >
                   <span style={{ fontSize: "13px", fontWeight: "bolder" }}>
-                    John
+                    {user.name}
                   </span>
-                  <span style={{ fontSize: "13px", fontWeight: "bolder" }}>
-                    Admin
+                  <span style={{ fontSize: "13px", fontWeight: "bolder" ,textTransform:"capitalize"}}>
+                    {user.role.toLowerCase()}
                   </span>
                 </Box>
               </IconButton>
@@ -227,7 +231,7 @@ export default function Navbar({ drawerWidth, open }) {
         </Toolbar>
       </AppBarStyled>
       {renderMobileMenu}
-      {renderMenu}
+                 {renderMenu}
     {/* </Box> */}
     </>
   );

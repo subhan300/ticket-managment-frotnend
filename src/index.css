@@ -6,6 +6,12 @@
   color: rgb(38, 38, 38);
   --main-border:rgb(240, 240, 240);
   --icon-color:rgb(38, 38, 38);
+  --link-color:rgb(38, 38, 38);
+  --gray-color:rgb(140, 140, 140);
+  --blue-color:rgb(105, 177, 255);
+  --table-header:#f5f5f5;
+  --btn-primary-contained:rgb(38, 38, 38);
+  --btn-disable:rgb(220, 220, 220)
   /* font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

@@ -16,9 +16,12 @@ import {AllUsers} from "./sub-pages/manager";
 import {ManagerTickets} from "./sub-pages/manager";
 import { CompanyInfo } from "./sub-pages/common";
 import {Tickets} from "./sub-pages/technician";
+import useStore from "./store";
 
 const App = () => {
-  const userLoggedIn = true;
+
+  const {isAuthenticated,user}=useStore(state=>state)
+  console.log("isAuthenticated",isAuthenticated)
 
   return (
     <Router>
@@ -26,11 +29,11 @@ const App = () => {
       
         <Route component={<NotFound />} path="*" />
         <Route
-          element={userLoggedIn ?DashboardSelect(MANAGER) : <Login />}
+          element={isAuthenticated ?DashboardSelect(MANAGER) : <Login />}
           path="/"
         />
          <Route
-          element={<PrivateRoute currentRoute={MANAGER}><AllUsers /></PrivateRoute>}
+          element={<PrivateRoute currentRoute={user?.role}><AllUsers /></PrivateRoute>}
           path={`/${MANAGER.toLowerCase()}/users`}
         />
           <Route

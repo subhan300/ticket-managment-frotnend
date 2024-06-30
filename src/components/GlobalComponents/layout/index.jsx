@@ -120,7 +120,7 @@ export default function Layout({ children, sideBarData }) {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List sx={{ px: 2 }}>
+        <List sx={{ px: 2 ,mt:".7rem"}}>
           {sideBarData.map((val) => (
             <ListItem key={val.title} disablePadding sx={{ display: "block" }}>
               <ListItemButton
@@ -156,7 +156,7 @@ export default function Layout({ children, sideBarData }) {
             </ListItem>
           ))}
         </List>
-        <Divider />
+        {/* <Divider sx={{mt:"6rem"}} /> */}
       </Drawer>
       <Box
         component="main"
