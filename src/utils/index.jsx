@@ -1,5 +1,5 @@
 import { TechnicianSideBar, adminSideBar, managerSideBar, userSideBar } from "../data/sidebar";
-import { ADMIN, HOUSEKEEPING, MANAGER, TECHNICIAN } from "../helper/constants";
+import { ADMIN, HOUSEKEEPING, MANAGER, TECHNICIAN, USER } from "../helper/constants";
 import Admin from "../pages/Admin";
 import LoginPage from "../pages/Login";
 import Manager from "../pages/Manager";
@@ -14,8 +14,8 @@ export const DashboardSelect = (role) => {
       return <Technician />;
     case MANAGER:
       return <Manager />;
-    case MANAGER:
-      return <Manager />;
+    case USER:
+      return <User />;
     case HOUSEKEEPING:
       return <h1>hOUSE KEEPING</h1>;
     default:
@@ -24,6 +24,7 @@ export const DashboardSelect = (role) => {
 };
 
 export const sideBarSelect = (role) => {
+  // debugger
   switch (role) {
     case ADMIN:
       return adminSideBar();
@@ -33,8 +34,10 @@ export const sideBarSelect = (role) => {
       return managerSideBar();
     // case HOUSEKEEPING:
     //   return hous;
-    default:
+    case USER:
       return userSideBar();
+    // default:
+    //   return null
   }
 };
 

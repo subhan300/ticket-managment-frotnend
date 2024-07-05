@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { DashboardSelect } from "./utils";
-import {  MANAGER, TECHNICIAN } from "./helper/constants";
+import {  MANAGER, TECHNICIAN, USER } from "./helper/constants";
 import {AllUsers} from "./sub-pages/manager";
 import {ManagerTickets} from "./sub-pages/manager";
 import { CompanyInfo } from "./sub-pages/common";
@@ -29,12 +29,18 @@ const App = () => {
       
         <Route component={<NotFound />} path="*" />
         <Route
-          element={isAuthenticated ?DashboardSelect(MANAGER) : <Login />}
+          element={isAuthenticated ?DashboardSelect(user?.role) : <Login />}
           path="/"
+
+        />
+        
+         <Route
+          element={<PrivateRoute currentRoute={USER}><Tickets /></PrivateRoute>}
+          path={`/${USER.toLowerCase()}/tickets`}
         />
          <Route
-          element={<PrivateRoute currentRoute={user?.role}><AllUsers /></PrivateRoute>}
-          path={`/${MANAGER.toLowerCase()}/users`}
+          element={<PrivateRoute currentRoute={user?.role}><CompanyInfo /></PrivateRoute>}
+          path={`/${USER.toLowerCase()}/company`}
         />
           <Route
           element={<PrivateRoute currentRoute={MANAGER}><Tickets /></PrivateRoute>}

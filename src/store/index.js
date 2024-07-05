@@ -18,6 +18,7 @@ const useStore = create((set) => ({
   },
   setLogOut:()=>{
     localStorage.removeItem("user")
+    
     return set({ isAuthenticated: false,userRole:null,user:null })
   }
   // setUserRole: (role) => set({ userRole: role }),

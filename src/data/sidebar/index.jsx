@@ -39,9 +39,8 @@ export const adminSideBar = () => {
 
 export const userSideBar = () => {
   return [
-    { icon: "", title: "Home" },
-    { icon: "", title: "Home" },
-    { icon: "", title: "Home" },
+    { icon: AppsOutlinedIcon, title: "Home",path:"/" },
+    { icon: PhotoFilterOutlinedIcon, title: "Company",path:"/user/company" },
   ];
 };
 
