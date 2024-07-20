@@ -13,8 +13,7 @@ import {
   flexCenter,
   flexBetween,
 } from "../styles-components/global-styles/styles";
-import TableComponent from "../components/customTable";
-import StatsCard from "../components/statsCard";
+
 
 const SignupPage = () => {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };

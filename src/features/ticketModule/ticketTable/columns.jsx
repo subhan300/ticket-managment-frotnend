@@ -4,21 +4,31 @@ import dayjs from "dayjs";
 
 
 export const columns = (handleDrawer) => [
+  // {
+  //   field: "_id",
+  //   headerName: "SNO",
+  //   flex: 1, // Make it flexible
+  // },
   {
-    field: "id",
-    headerName: "SNO",
-    flex: 1, // Make it flexible
-  },
-  {
-    field: "userName",
+    field: "name",
     headerName: "Name",
     flex: 2, // Make it flexible with a larger factor
   },
   {
-    field: "userEmail",
+    field: "email",
     headerName: "Email",
     flex: 2,
   },
+  {
+    field: "assignedTo",
+    headerName: "Assigned To",
+    flex:2,
+    valueGetter: (params) => {
+      return params?params :"not assigned"
+    },
+
+  },
+
   {
     field: "issue",
     headerName: "Issue",
@@ -47,12 +57,13 @@ export const columns = (handleDrawer) => [
     renderCell: (params) => (
       <GridActionsCellItem
         icon={<VisibilityIcon />}
-        label="View Details"
+        label="View Details"  
         onClick={() => handleDrawer(params.row)}
       />
     ),
   },
 ];
+
 export const data = [
   {
     id: "1",

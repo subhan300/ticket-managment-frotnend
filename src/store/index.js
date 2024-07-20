@@ -1,4 +1,4 @@
-import create from 'zustand';
+import {create} from 'zustand';
 import { MANAGER } from '../helper/constants';
 // store.js
 import {getLocalItem, setLocalItem} from "../utils"
@@ -11,6 +11,9 @@ const useStore = create((set) => ({
   isAuthenticated: user?.token??null,
   user:user,
   userRole:user?.role, 
+  open: false,
+  message: '', 
+  severity: '', 
   setUserAuthenticated: (user) => {
     setLocalItem("user",user)
     const {role,token}=user
@@ -20,8 +23,11 @@ const useStore = create((set) => ({
     localStorage.removeItem("user")
     
     return set({ isAuthenticated: false,userRole:null,user:null })
-  }
-  // setUserRole: (role) => set({ userRole: role }),
+  },
+ 
+
+  openAlert: (message, severity = 'success') => set({ open: true, message, severity }),
+  closeAlert: () => set({ open: false }),
 }));
 
 export default useStore;

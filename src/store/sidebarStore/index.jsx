@@ -1,4 +1,4 @@
-import create from 'zustand';
+import {create} from 'zustand';
 import { maxSideWidth, minSideWidth, sideBarWidthCons } from '../../helper/constants';
 import useWindowWidth from '../../hooks/useWidth';
 

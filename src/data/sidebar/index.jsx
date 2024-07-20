@@ -20,9 +20,9 @@ export const managerSideBar = () => {
 
 export const TechnicianSideBar = () => {
   return [
-    { icon: "", title: "Home", path: "/" },
+    { icon: AppsOutlinedIcon, title: "Home", path: "/" },
     {
-      icon: "",
+      icon: AppsOutlinedIcon,
       title: "Tickets",
       path: `/${TECHNICIAN.toLowerCase()}/tickets`,
     },
@@ -39,8 +39,8 @@ export const adminSideBar = () => {
 
 export const userSideBar = () => {
   return [
-    { icon: AppsOutlinedIcon, title: "Home",path:"/" },
-    { icon: PhotoFilterOutlinedIcon, title: "Company",path:"/user/company" },
+    { icon: AppsOutlinedIcon, title: "Home", path: "/" },
+    { icon: PhotoFilterOutlinedIcon, title: "Company", path: "/user/company" },
   ];
 };
 
@@ -52,7 +52,7 @@ export const OrdersData = [
         variant="caption"
         sx={{ color: "var(--gray-color)", marginTop: "18px" }}
       >
-        Inventory available for next {" "}
+        Inventory available for next{" "}
         <span style={{ color: "var(--blue-color)" }}>2 months</span>
       </Typography>
     ),
@@ -98,3 +98,39 @@ export const OrdersData = [
     amount: "400,30K",
   },
 ];
+
+// export const ticketInitialValues={
+//   userId: '',
+//   issue: '',
+//   description: '',
+//   assignedTo:"Not Assigned",
+//   status: 'OPEN',
+//   issueLocation: {
+//     locationName: '',
+//     unit: '',
+//     floor: '',
+//     room: '',
+//     extraDetail: '',
+//   },
+// }
+
+export const ticketInitialValues = {
+  userId: "66815c42b060e5455702faaf",
+  issue: "issue in room 3003 in light",
+  description: "room issue in light anf bulb",
+  images: [
+    "https://www.shutterstock.com/image-vector/scan-pay-woman-sits-next-shopping-2305807205",
+  ],
+  status: "OPEN",
+  assignedTo: "",
+  issueLocation: {
+    locationName: "",
+    unit: "",
+
+    room: "",
+    extraDetail: "room is at first floor , near from main entrance of building",
+  },
+};
+// "unit":{"name":"Basement","_id":"66886e4c18ad94b85531ac4f"},
+export const units = ["Basement", "Unit2", "Unit3"]; // Replace with actual unit data
+export const rooms = ["1042", "Room2", "Room3"];

@@ -24,17 +24,20 @@ const maxDrawerWidth = maxSideWidth;
 
 const openedMixin = (theme, drawerWidth) => ({
   width: `${drawerWidth}px`,
+   background:"var(--primary-color)",
   transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
+    easing: theme.transitions.easing.easeInOut,
+    duration:130,
   }),
   overflowX: "hidden",
 });
 
 const closedMixin = (theme, drawerWidth) => ({
+  background:"var(--primary-color)",
+
   transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
+    easing: theme.transitions.easing.easeInOut,
+    duration:130,
   }),
   overflowX: "hidden",
   width: `${drawerWidth}px`,
@@ -57,7 +60,8 @@ const Drawer = styled(MuiDrawer, {
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
-  border: "1px solid yellow",
+ 
+  // border: "1px solid yellow",
   ...(open && {
     ...openedMixin(theme, drawerWidth),
     "& .MuiDrawer-paper": openedMixin(theme, drawerWidth),
@@ -72,7 +76,6 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Layout({ children, sideBarData }) {
-  console.log("sidebardata", sideBarData);
   const navigate = useCustomNavigate();
   const [open, setOpen] = React.useState(true);
   const [drawerWidth, setDrawerWidth] = React.useState(maxDrawerWidth);
@@ -149,7 +152,7 @@ export default function Layout({ children, sideBarData }) {
                   primary={val.title}
                   sx={{ display: open ? "block" : "none" }}
                   primaryTypographyProps={{
-                    sx: { fontWeight: 400 },
+                    sx: { fontWeight: 400 ,color:"var(--icon-color)"},
                   }}
                 />
               </ListItemButton>
@@ -160,7 +163,19 @@ export default function Layout({ children, sideBarData }) {
       </Drawer>
       <Box
         component="main"
-        sx={{ flexGrow: 1, wdth: "100%", marginTop: "75px", px: 6 }}
+        sx={(theme)=>({ 
+          // flexGrow: 1, wdth: "100%",
+          // flexGrow:1, 
+          marginTop: "75px", px: 6,
+            width:"100%",
+          [theme.breakpoints.up('sm')]: {
+           width:`calc(100% - ${drawerWidth}px)`
+          },
+
+          
+          
+          
+        })}
       >
         {children}
       </Box>

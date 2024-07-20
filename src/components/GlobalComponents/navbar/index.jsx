@@ -30,9 +30,9 @@ const AppBarStyled = styled(AppBar, {
  
   borderBottom: "1px solid rgb(240, 240, 240)",
   borderLeft: "1px solid rgb(240, 240, 240)",
-
+width: `calc(100% - ${drawerWidth}px)`,
   marginLeft: `${drawerWidth}px`,
-  width: `calc(100% - ${drawerWidth}px)`,
+  
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
@@ -163,7 +163,8 @@ export default function Navbar({ drawerWidth, open }) {
           <div>
             <img
               style={{ height: "30px" }}
-              src={"https://www.brandbucket.com/images7/head_logo2s.png?"}
+              // src={"https://www.brandbucket.com/images7/head_logo2s.png?"}
+              src={"https://229288.fs1.hubspotusercontent-na1.net/hubfs/229288/maintenancecare-theme-2023/images/logo-color.svg"}
             ></img>
             {/* <Typography variant="h2">Admin Dashboard</Typography> */}
           </div>
@@ -177,7 +178,7 @@ export default function Navbar({ drawerWidth, open }) {
                 color="inherit"
               >
                 <Badge badgeContent={17} color="error">
-                  <NotificationsIcon />
+                  <NotificationsIcon sx={{color:"var(--primary-color)"}} />
                 </Badge>
               </IconButton>
               <IconButton
@@ -206,10 +207,10 @@ export default function Navbar({ drawerWidth, open }) {
                     marginLeft:"6px"
                   }}
                 >
-                  <span style={{ fontSize: "13px", fontWeight: "bolder" }}>
+                  <span style={{ fontSize: "13px", fontWeight: "bolder",color:"var(--secondary-color)" }}>
                     {user.name}
                   </span>
-                  <span style={{ fontSize: "13px", fontWeight: "bolder" ,textTransform:"capitalize"}}>
+                  <span style={{ fontSize: "13px", fontWeight: "bolder" ,textTransform:"capitalize",color:"var(--secondary-color)" }}>
                     {user.role.toLowerCase()}
                   </span>
                 </Box>

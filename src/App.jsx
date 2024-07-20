@@ -17,16 +17,24 @@ import {ManagerTickets} from "./sub-pages/manager";
 import { CompanyInfo } from "./sub-pages/common";
 import {Tickets} from "./sub-pages/technician";
 import useStore from "./store";
+import Alert from "./components/GlobalComponents/alert/Alert";
+import { useEffect } from "react";
 
 const App = () => {
 
-  const {isAuthenticated,user}=useStore(state=>state)
-  console.log("isAuthenticated",isAuthenticated)
+  const {isAuthenticated,user,openAlert,message}=useStore(state=>state)
 
+  // useEffect(()=>{
+  //   openAlert(`New INR amount`, 'info');
+  // },[])
   return (
+  <>
+  <Alert />
+ 
     <Router>
+
       <Routes>
-      
+       
         <Route component={<NotFound />} path="*" />
         <Route
           element={isAuthenticated ?DashboardSelect(user?.role) : <Login />}
@@ -63,6 +71,7 @@ const App = () => {
         <Route element={<Login />} path="/login" />
       </Routes>
     </Router>
+  </>
   );
 };
 

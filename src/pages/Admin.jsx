@@ -1,5 +1,5 @@
 // import React from 'react';
-import Layout from '../components/GlobalComponents/layout';
+import Layout from '../components/GlobalComponents/layout/Layout';
 import { Box} from '@mui/material';
 import { adminSideBar } from '../data/sidebar';
 

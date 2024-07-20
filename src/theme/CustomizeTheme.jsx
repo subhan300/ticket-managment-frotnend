@@ -129,10 +129,10 @@ export const theme = createTheme({
         root: {
           width:"100%",
           '--TextField-brandBorderColor': '#E0E3E7',
-          '--TextField-brandBorderHoverColor': '#B2BAC2',
-          '--TextField-brandBorderFocusedColor': '#6F7E8C',
+          '--TextField-brandBorderHoverColor': '#E0E3E7',
+          '--TextField-brandBorderFocusedColor': '#E0E3E7',
           '& label.Mui-focused': {
-            color: 'var(--TextField-brandBorderFocusedColor)',
+            color: '#E0E3E7',
           },
         },
       },
@@ -146,10 +146,11 @@ export const theme = createTheme({
         root: {
            width:"100%",
           [`&:hover .${outlinedInputClasses.notchedOutline}`]: {
-            borderColor: 'var(--TextField-brandBorderHoverColor)',
+            borderColor: 'var(--TextField-brandBorderColor)',
           },
           [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
-            borderColor: 'var(--TextField-brandBorderFocusedColor)',
+            borderColor: 'var(--TextField-brandBorderColor)',
+            borderWidth: '1px', 
           },
         },
       },

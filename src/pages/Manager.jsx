@@ -1,10 +1,10 @@
 // import React from 'react';
-import Layout from "../components/GlobalComponents/layout";
+import Layout from "../components/GlobalComponents/layout/Layout";
 import { Box, Typography } from "@mui/material";
 import { OrdersData, managerSideBar } from "../data/sidebar";
 import StatsCard from "../components/statsCard";
 import { Title } from "@mui/icons-material";
-import DataGridDemo from "../components/customTable";
+import { TicketTable } from "../features/ticketModule";
 
 const Manager = () => {
   return (
@@ -16,7 +16,7 @@ const Manager = () => {
       </Box>
       <Box sx={{my:"2.5rem",width:"98%"}}>
          <Typography variant="h3" sx={{mb:"1rem"}}>All Tickets</Typography>
-         <DataGridDemo />
+         < TicketTable />
       </Box>
     </Layout>
   );

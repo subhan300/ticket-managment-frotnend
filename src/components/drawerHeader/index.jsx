@@ -4,7 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 const DrawerHeader = ({handleTicketDialog,title,children}) => {
     return (
-            <AppBar sx={{ position: 'relative',background:"var(--main-color)" }}>
+            <AppBar sx={{ position: 'relative',background:"var(--primary-color)" }}>
           <Toolbar>
             <IconButton
               edge="start"

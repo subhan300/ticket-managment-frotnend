@@ -1,42 +1,26 @@
 // import React from 'react';
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import React, { useEffect, useState } from "react";
+
 import {
   Box,
   Button,
-  TextField,
   MenuItem,
   Grid,
   Typography,
-  IconButton,
+  Backdrop,
+  CircularProgress 
 } from "@mui/material";
 
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { flexBetween } from "../../styles-components/global-styles/styles";
-import DrawerHeader from "../drawerHeader";
-import TicketForm from "../ticketForm";
-
+import DrawerHeader from "../../../components/drawerHeader";
+import TicketForm from "../ticketForm/TicketForm";
+import { useEditTicketMutation } from "../../../apis/apiSlice";
+import useUpload from "../../../hooks/useUpload";
 // Constants
 const statuses = ["OPEN", "PROGRESS", "BLOCKED", "CLOSED"];
 const assignedToMembers = ["Not Assigned", "Me", "Jones", "David", "Kingzi"];
 
-const validationSchema = Yup.object({
-  userId: Yup.string().required("User ID is required"),
-  issue: Yup.string().required("Issue is required"),
-  description: Yup.string().required("Description is required"),
-  status: Yup.string().oneOf(statuses).required("Status is required"),
-  issueLocation: Yup.object({
-    locationName: Yup.string().required("Location name is required"),
-    unit: Yup.string().required("Unit is required"),
-    floor: Yup.string().required("Floor is required"),
-    room: Yup.string().required("Room is required"),
-    extraDetail: Yup.string(),
-  }),
-});
 const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
   border: "1px solid red",
   "& .MuiDrawer-paper": {
@@ -50,70 +34,42 @@ const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
   },
 }));
 const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
-  const [images, setImages] = useState(initialValues.images || []);
-  const [editMode, setEditMode] = useState({
-    userId: false,
-    issue: false,
-    description: false,
-    status: false,
-    assignedTo: false,
-    locationName: false,
-    unit: false,
-    floor: false,
-    room: false,
-    extraDetail: false,
-  });
+  const {
+    uploadToCloudinary,
+    isLoading: cloudinaryLoading,
+    error: cloudinaryError,
+  } = useUpload();
   const [edit, setEdit] = useState(false);
-  const attachments = [
-    "https://www.shutterstock.com/shutterstock/photos/2472949361/display_1500/stock-photo-ultra-wideband-technology-radio-frequency-technology-high-frequency-broadband-short-range-2472949361.jpg",
-    "https://www.shutterstock.com/shutterstock/photos/2233924609/display_1500/stock-vector-short-and-custom-urls-url-shortener-technology-and-generator-scissor-cut-an-address-bar-or-link-2233924609.jpg",
-    "https://www.shutterstock.com/shutterstock/photos/249041452/display_1500/stock-vector-smartphone-with-speech-bubble-social-media-icons-chat-speech-bubble-and-share-link-symbols-short-249041452.jpg",
-  ];
-  const handleImageUpload = (event) => {
-    const files = event.target.files;
-    const fileArray = Array.from(files).map((file) =>
-      URL.createObjectURL(file)
-    );
-    setImages((prevImages) => prevImages.concat(fileArray));
-    formik.setFieldValue("images", formik.values.images.concat(files));
-  };
-
-  const handleImageRemove = (index) => {
-    const newImages = images.filter((_, i) => i !== index);
-    const newFileList = Array.from(formik.values.images).filter(
-      (_, i) => i !== index
-    );
-    setImages(newImages);
-    formik.setFieldValue("images", newFileList);
-  };
-
-  const handleEditClick = (field) => {
-    setEditMode({ ...editMode, [field]: !editMode[field] });
-  };
-
-  const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log(JSON.stringify(values, null, 2));
-    },
-  });
-  console.log("initial values", initialValues);
+  const [editTicket, result] = useEditTicketMutation();
+  const { isLoading, isSuccess } = result;
+  // console.log("initial values", initialValues);
   const {
     issue,
-    id,
+    images,
     description,
     assignedTo,
     status,
     issueLocation,
   } = initialValues;
+  const handleOnFinish =async (values) => {
+    // console.log("values", values);
+    const uploadedImages = await uploadToCloudinary(values.images);
+    console.log("Uploaded Images:", uploadedImages);
+    editTicket({...values,images:uploadedImages});
+    //  navigate("/")
+  };
+  useEffect(() => {
+    if (isSuccess) {
+      setEdit(false);
+    }
+  }, [isSuccess]);
   return (
     <FullWidthDrawer
       anchor="right"
+      open={Boolean(isOpen)}
       SlideProps={{
         sx: { width: "70%" },
       }}
-      open={isOpen}
       onClose={() => handleDrawer(false)}
     >
       <DrawerHeader title={"Edit Ticket"} handleTicketDialog={handleDrawer}>
@@ -140,9 +96,7 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
           </Button>
         )}
       </DrawerHeader>
-      {/* <Box sx={{display:"flex",justifyContent:"flex-end",p:"12px"}}>
-        
-      </Box> */}
+
       <Box sx={{ maxWidth: 800, padding: "22px 12px" }}>
         {!edit && (
           <>
@@ -157,7 +111,9 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
               </Grid>
               <Grid xs={12} sm={12} item>
                 <Typography variant="h5">Ticket Assigned :</Typography>
-                <Typography variant="h6">{assignedTo}</Typography>
+                <Typography variant="h6">
+                  {assignedTo ? assignedTo : "Not Assigned"}
+                </Typography>
               </Grid>
               <Grid xs={12} sm={12} item>
                 <Typography variant="h5">Status :</Typography>
@@ -166,9 +122,9 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
               <Grid xs={12} sm={12} item>
                 <Typography variant="h5">Attachments</Typography>
               </Grid>
-              {attachments.map((val) => {
+              {images.map((val, i) => {
                 return (
-                  <Grid xs={6} sm={4} item>
+                  <Grid key={i} xs={6} sm={4} item>
                     <img
                       style={{ width: "100%", height: "100%" }}
                       src={val}
@@ -183,22 +139,21 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
               <Grid xs={12} sm={6} item>
                 <Typography variant="h5">Place</Typography>
                 <Typography variant="h6">
-                  {issueLocation.locationName}
+                  {issueLocation.locationName
+                    ? issueLocation.locationName
+                    : "- - - - - - "}
                 </Typography>
               </Grid>
 
               <Grid xs={12} sm={6} item>
                 <Typography variant="h5">Unit</Typography>
-                <Typography variant="h6">{issueLocation.unit}</Typography>
+                <Typography variant="h6">{issueLocation.unit.name}</Typography>
               </Grid>
               <Grid xs={12} sm={6} item>
                 <Typography variant="h5">Room</Typography>
                 <Typography variant="h6">{issueLocation.room}</Typography>
               </Grid>
-              <Grid xs={12} sm={6} item>
-                <Typography variant="h5">Floor</Typography>
-                <Typography variant="h6">{issueLocation.floor}</Typography>
-              </Grid>
+
               <Grid xs={12} sm={6} item>
                 <Typography variant="h5">Extra Detail</Typography>
                 <Typography variant="h6">
@@ -208,7 +163,22 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
             </Grid>
           </>
         )}
-        {edit && <TicketForm />}
+        {edit && (
+          <>
+           <Backdrop
+          sx={{ display:"flex",justifyContent:"center",alignItems:"center",color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoading || cloudinaryLoading}
+          // onClick={handleClose}
+        >
+          <CircularProgress color="inherit" />
+          </Backdrop>
+            <TicketForm
+              handleOnFinish={handleOnFinish}
+              initialValues={initialValues}
+            />
+          </>
+        )}
+    
       </Box>
     </FullWidthDrawer>
   );

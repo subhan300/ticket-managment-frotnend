@@ -7,7 +7,7 @@ export default defineConfig({
   base: 'https://ticket-managment-frotnend.vercel.app/',
   server: {
     // Ensure HMR is enabled
-    hmr: true,
+    // hmr: true,
     // Specify the port if needed
     // port: 3000,
   },
