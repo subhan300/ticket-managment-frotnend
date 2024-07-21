@@ -59,12 +59,13 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
     validationSchema: validationSchema,
     validateOnMount: true,
     onSubmit: async(values) => {
+
       values.issueLocation = {
         ...values.issueLocation,
         unit: unitId,
-        assignedTo,
+        
       };
-      handleOnFinish({...values,images:imgFiles});
+      handleOnFinish({...values,assignedTo,images:imgFiles});
     },
   });
 
@@ -158,6 +159,7 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
                     (option) => (
                       <MenuItem
                         onClick={() => {
+                          console.log("options===",option)
                           setAssignedTo(option._id);
                         }}
                         key={option.name}

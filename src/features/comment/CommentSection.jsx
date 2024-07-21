@@ -9,18 +9,18 @@ import axios from "axios";
 import {
   useAddCommentMutation,
   useGetAllTicketsQuery,
-  useGetTicketsByUserIdQuery,
 } from "../../apis/apiSlice";
 import UseCommentSocketConnection from "./hooks/useCommentSocketConnection";
+import useStore from "../../store";
 
 const CommentWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   position: "relative",
-  padding: "10px",
+  padding: "10px 0",
   "& .comment_list": {
     marginTop: "1.5rem",
-    height: "160px",
+    height: "250px",
     overflow: "auto",
     position: "relative",
     display: "flex",
@@ -48,10 +48,11 @@ const CommentWrapper = styled(Box)(({ theme }) => ({
     marginBottom: "10px",
   },
 }));
-const CommentSection = ({ ticketId, userId }) => {
+const CommentSection = () => {
    UseCommentSocketConnection()
-  const { data, isSuccess } = useGetAllTicketsQuery();
   const [addComment, result] = useAddCommentMutation();
+  const user=useStore(state=>state.user)
+  const userId=user._id
   const {
     setFiles,
     files,
@@ -60,6 +61,7 @@ const CommentSection = ({ ticketId, userId }) => {
     handleRemoveFile,
     commentList,
     setCommentList,
+    ticketId
   } = useCommentStore((state) => state);
 
   const { uploadToCloudinary } = useUpload();
@@ -88,13 +90,7 @@ const CommentSection = ({ ticketId, userId }) => {
     }
   };
 
-  useEffect(() => {
-    if (isSuccess && data.length) {
-      // debugger
-      const filterComment = data.filter((val) => val._id === ticketId);
-      setCommentList(filterComment?.[0]?.comments);
-    }
-  }, [isSuccess]);
+ 
   return (
     <CommentWrapper>
       <Box sx={{}}>

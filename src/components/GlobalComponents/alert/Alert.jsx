@@ -22,7 +22,7 @@ const Alerts = () => {
 
   useEffect(() => {
     if (open) {
-      const timeoutId = setTimeout(() => closeAlert(), 12000); // Close after 12 seconds
+      const timeoutId = setTimeout(() => closeAlert(), 1200); // Close after 12 seconds
       return () => clearTimeout(timeoutId); // Cleanup function
     }
   }, [open, closeAlert]);

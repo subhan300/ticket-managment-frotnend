@@ -37,6 +37,10 @@ export const apiSlice = createApi({
       query: (userId) => `/ticket/user/${userId}`,
       providesTags: ["ticket"],
     }),
+    getFilteredCompanyTickets: builder.query({
+      query: () => `/ticket/getFilteredCompanyTickets`,
+      providesTags: ["ticket"],
+    }),
     getAllTickets: builder.query({
       query: () => `/ticket/getAll`,
       providesTags: ["ticket"],
@@ -62,31 +66,31 @@ export const apiSlice = createApi({
     }),
     editComment: builder.mutation({
       query: (payload) => {
-        const { ticketId, commentId, userId, text ,createdAt} = payload;
+        const { ticketId, commentId, userId, text, createdAt } = payload;
         return {
           url: `/comment/${ticketId}/comment/${commentId}`,
           method: "PUT",
-          body: { text, userId ,createdAt},
+          body: { text, userId, createdAt },
         };
       },
     }),
     addComment: builder.mutation({
       query: (payload) => {
-        const { ticketId, userId, text, images,createdAt } = payload;
+        const { ticketId, userId, text, images, createdAt } = payload;
         return {
           url: `/comment/${ticketId}`,
           method: "POST",
-          body: { userId, text, images,createdAt },
+          body: { userId, text, images, createdAt },
         };
       },
     }),
     deleteComment: builder.mutation({
       query: (payload) => {
-        const { ticketId, commentId ,userId} = payload;
+        const { ticketId, commentId, userId } = payload;
         return {
           url: `/comment/${ticketId}/comment/${commentId}`,
           method: "DELETE",
-          body: {userId}
+          body: { userId },
         };
       },
     }),
@@ -95,6 +99,7 @@ export const apiSlice = createApi({
 
 export const {
   useGetTicketsByUserIdQuery,
+  useGetFilteredCompanyTicketsQuery,
   useGetAllTicketsQuery,
   useLoginMutation,
   useCreateTicketMutation,

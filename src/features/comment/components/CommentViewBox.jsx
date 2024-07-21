@@ -131,14 +131,13 @@ const CommentViewBox = ({ comment}) => {
               {comment?.name}
             </Typography>
             <Typography variant="body2" className="comment_date">
-              {`${dateFormatTime(comment?.created)}`}
+              {`${dateFormatTime(comment?.createdAt)}`}
             </Typography>
             <Box>
               {stateComment._id === comment._id && user._id=== comment.userId? (
                 <EditComment />
               ) : (
                 <Typography variant="body2" className="comment_text">
-                  {" "}
                   {comment.text}
                 </Typography>
               )}

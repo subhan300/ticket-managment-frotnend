@@ -10,14 +10,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { AuthBox } from "../styles-components/sub-pages/pages/LoginStyles";
-import {
-  flexCenter,
-  flexBetween,
-} from "../styles-components/global-styles/styles";
+
+
 import { useLoginMutation } from '../apis/apiSlice';
 import useStore  from '../store';
 import useCustomNavigate from '../hooks/useCustomNavigate';
+import { flexBetween,flexCenter,AuthBox } from '../styles-components';
 
 const LoginPage = () => {
   const [login, { isLoading }] = useLoginMutation();

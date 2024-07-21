@@ -23,8 +23,6 @@ const User = () => {
       <CreateTicket isOpen={isOpen} handleTicketDialog={handleTicketDialog} />
    
       <Layout sideBarData={userSideBar()}>
-      {/* <Comments ticketId={"668abd7a15a4ebe3e8299cd6"} userId={user._id} comments={[]} /> */}
-      <CommentSection ticketId={"66930b4fd27c53bc169b704b"} userId={user._id} comments={[]} />
         <Box
           sx={{
             marginTop: "2rem",
@@ -41,7 +39,6 @@ const User = () => {
           })}
         </Box>
         <Box sx={{ my: "2.5rem", width: "98%", border: "1px  yellow" }}>
-        {/* <CommentSection /> */}
           <Box sx={{ ...flexBetween, mb: "1rem" }}>
             <Typography variant="h3" sx={{color:"var(--primary-color)"}}>All Tickets</Typography>
             <Button

@@ -6,6 +6,7 @@ import TicketDrawer from "../editTicket/EditTicketForm";
 import { useTheme } from "@mui/material";
 import useStore from "../../../store";
 import { useGetTicketsByUserIdQuery } from "../../../apis/apiSlice";
+import useCommentStore from "../../comment/store/CommentStore";
 
 const initialValue = {
   userId: "12345", // Replace with actual user ID
@@ -29,12 +30,17 @@ export default function TicketTable() {
   const theme = useTheme();
   const user = useStore((state) => state.user);
   const { isLoading, data ,isSuccess} = useGetTicketsByUserIdQuery(user._id);
-  const api = useGetTicketsByUserIdQuery(user._id);
+  const {setTicketId,setCommentList}=useCommentStore(state=>state)
+  
   
   // console.log("islaoding",isLoading,"api======",api,"=====",isSuccess)
   // console.log("data===",data)
   const handleDrawer = (value) => {
+    setTicketId(value._id)
+    setCommentList(value.comments)
     setIsOpen(value);
+
+    
     // console.log("iso", isOpen, "---", value);
   };
 

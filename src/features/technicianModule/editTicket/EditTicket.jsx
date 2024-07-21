@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 import DrawerHeader from "../../../components/drawerHeader";
-import TicketForm from "../ticketForm/TicketForm";
+// import TicketForm from "../ticketForm/TicketForm";
 import { useEditTicketMutation } from "../../../apis/apiSlice";
 import useUpload from "../../../hooks/useUpload";
 import { CommentSection } from "../../comment";
@@ -53,10 +53,9 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
     issueLocation,
   } = initialValues;
   const handleOnFinish =async (values) => {
-    console.log("values", values);
+    // console.log("values", values);
     const uploadedImages = await uploadToCloudinary(values.images);
     console.log("Uploaded Images:", uploadedImages);
-    
     editTicket({...values,images:uploadedImages});
     //  navigate("/")
   };
@@ -165,7 +164,7 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
             </Grid>
             <Box sx={{marginTop:"3rem"}}>
               <Typography variant="h5">Comments:</Typography>
-            <CommentSection comments={initialValues.comments}  />
+            <CommentSection  />
             </Box>
           </>
         )}
@@ -178,10 +177,10 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
         >
           <CircularProgress color="inherit" />
           </Backdrop>
-            <TicketForm
+            {/* <TicketForm
               handleOnFinish={handleOnFinish}
               initialValues={initialValues}
-            />
+            /> */}
           </>
         )}
     

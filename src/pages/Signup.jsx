@@ -8,11 +8,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { AuthBox } from "../styles-components/sub-pages/pages/LoginStyles";
-import {
-  flexCenter,
-  flexBetween,
-} from "../styles-components/global-styles/styles";
+import {  } from "../styles-components/sub-pages/pages/LoginStyles";
+import { flexBetween ,AuthBox,flexCenter} from "../styles-components";
+
 
 
 const SignupPage = () => {
