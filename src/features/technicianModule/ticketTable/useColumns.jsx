@@ -1,6 +1,7 @@
 import { GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 // import {SaveIcon,VisibilityIcon,CancelIcon,EditIcon,DeleteIcon} from "@mui/icons-material/Edit";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
@@ -8,19 +9,20 @@ import dayjs from "dayjs";
 import { useTechnicianStore } from "../store";
 import useStore from "../../../store";
 import { COMPLETED, NotAssigned, OPEN, PROGRESS } from "../../../helper";
+import { statusCollection} from "../../../data";
 
+export const useColumns = (handleDrawer, rowModesModel, setRowModesModel) => {
+  const { data: ticketsData, setData, technicians } = useTechnicianStore(
+    (state) => state
+  );
+  const user = useStore((state) => state.user);
 
-export const useColumns = (handleDrawer, rowModesModel,setRowModesModel) => {
-  const {data:ticketsData,setData,technicians}=useTechnicianStore(state=>state)
-  const user=useStore(state=>state.user)
-  
   const handleEditClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick = (id,row) => () => {
+  const handleSaveClick = (id, row) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-
   };
 
   const handleDeleteClick = (id) => () => {
@@ -52,52 +54,45 @@ export const useColumns = (handleDrawer, rowModesModel,setRowModesModel) => {
     {
       field: "email",
       headerName: "Email",
-      flex: 2,
+      flex: 3,
     },
-   
-      {
-        field: "assignedTo",
-        headerName: "Assigned To",
-        flex: 2,
-        editable: true,
-        type: "singleSelect",
-        getOptionValue: (option) => option.name,
-        getOptionLabel: (option) => option.name,
-        valueOptions: [{ name: NotAssigned, _id: "", value: "" }, ...technicians],
-        valueGetter: (params,row) => {
-          return params !== ""? params : NotAssigned
-        },
-      
-      }
-    ,
 
+    {
+      field: "assignedTo",
+      headerName: "Assigned To",
+      flex: 2,
+      editable: true,
+      type: "singleSelect",
+      getOptionValue: (option) => option.name,
+      getOptionLabel: (option) => option.name,
+      valueOptions: [{ name: NotAssigned, _id: "", value: "" }, ...technicians],
+      valueGetter: (params, row) => {
+        return params !== "" ? params : NotAssigned;
+      },
+    },
     {
       field: "issue",
       headerName: "Issue",
-      flex: 2,
-    },
-    {
-      field: "description",
-      headerName: "Description",
       flex: 3,
     },
+   
     {
       field: "status",
       headerName: "Status",
-      flex: 1,
+      flex: 3,
       editable: true,
       type: "singleSelect",
-      valueOptions: [OPEN,COMPLETED,PROGRESS],
-      valueGetter: (params,row) => {
+      valueOptions:statusCollection ,
+      valueGetter: (params, row) => {
         // const assignedTech = technicians.find(tech => tech._id === row.assignedTo);
         // return assignedTech ? assignedTech._id : "";
-        return params
+        return params;
       },
     },
     {
       field: "createdAt",
       headerName: "Created At",
-      flex: 1,
+      flex: 2,
       valueGetter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
     },
     {
@@ -105,9 +100,9 @@ export const useColumns = (handleDrawer, rowModesModel,setRowModesModel) => {
       type: "actions",
       headerName: "Actions",
       width: 100,
+      flex: 2,
       cellClassName: "actions",
-      getActions: ({row,id}) => {
-      
+      getActions: ({ row, id }) => {
         // debugger
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -119,7 +114,7 @@ export const useColumns = (handleDrawer, rowModesModel,setRowModesModel) => {
               sx={{
                 color: "primary.main",
               }}
-              onClick={handleSaveClick(id,row)}
+              onClick={handleSaveClick(id, row)}
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
@@ -140,10 +135,9 @@ export const useColumns = (handleDrawer, rowModesModel,setRowModesModel) => {
             color="inherit"
           />,
           <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
+            icon={<VisibilityIcon />}
+            label="View Details"
+            onClick={() => handleDrawer(row)}
           />,
         ];
       },

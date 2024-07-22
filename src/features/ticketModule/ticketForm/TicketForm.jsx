@@ -23,16 +23,15 @@ import useStore from "../../../store";
 import { FileUploader } from "../../../components";
 import { dateFormat } from "../../../utils";
 import { CloudUpload,Delete } from "@mui/icons-material";
+import {  statusCollection } from "../../../data";
 
-// Constants
-const statuses = ["OPEN", "PROGRESS", "BLOCKED", "CLOSED"];
-const assignedToMembers = ["Not Assigned", "Me", "Jones", "David", "Kingzi"];
+
 
 const validationSchema = Yup.object({
   // userId: Yup.string().required('User ID is required'),
   issue: Yup.string().required("Issue is required"),
   description: Yup.string().required("Description is required"),
-  status: Yup.string().oneOf(statuses).required("Status is required"),
+  status: Yup.string().oneOf(statusCollection).required("Status is required"),
   issueLocation: Yup.object({
     locationName: Yup.string(),
     // unit: Yup.string().required("Unit is required"),
@@ -131,7 +130,7 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
                 error={formik.touched.status && Boolean(formik.errors.status)}
                 helperText={formik.touched.status && formik.errors.status}
               >
-                {statuses.map((option) => (
+                {statusCollection.map((option) => (
                   <MenuItem key={option} value={option}>
                     {option}
                   </MenuItem>

@@ -7,7 +7,7 @@ const useCommentStore = create((set) => ({
   isLoading: false,
   addLoading: false,
   deleteLoading:false,
-  ticketId: "66930b4fd27c53bc169b704b",
+  ticketId: "",
   setCommentList: (payloadComments) => {
     set((state) => ({
       commentList: payloadComments,

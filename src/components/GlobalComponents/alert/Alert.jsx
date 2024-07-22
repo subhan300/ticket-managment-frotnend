@@ -21,10 +21,10 @@ const Alerts = () => {
   const { open, message, severity, closeAlert } = useStore();
 
   useEffect(() => {
-    if (open) {
-      const timeoutId = setTimeout(() => closeAlert(), 1200); // Close after 12 seconds
-      return () => clearTimeout(timeoutId); // Cleanup function
-    }
+    // if (open) {
+    //   const timeoutId = setTimeout(() => closeAlert(), 1200); // Close after 12 seconds
+    //   return () => clearTimeout(timeoutId); // Cleanup function
+    // }
   }, [open, closeAlert]);
 
   if (!open) return null; // Don't render if alert is closed
@@ -50,7 +50,10 @@ const Alerts = () => {
       }
       key={"fade-slide"} // Optional: Key to prevent unnecessary re-renders
       sx={{
-     
+         width:"300px",
+         left:"auto",
+         top:"3px",
+        //  margin:"auto auto",
         "& .MuiPaper-root": {
           padding:"0",
           ...severityStyles[severity],

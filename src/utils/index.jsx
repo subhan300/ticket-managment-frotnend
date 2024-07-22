@@ -60,3 +60,8 @@ export const dateFormat=(date)=>{
 export const  dateFormatTime=(date)=>{
   return dayjs(date).format('D MMM, YYYY hh:mm A')
 }
+
+
+export const getFilterTechnician=(data,name)=>{
+  return data.filter(val=>val.name===name)[0]
+}

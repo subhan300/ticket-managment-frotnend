@@ -18,7 +18,7 @@ import { useDeleteCommentMutation } from "../../../apis/apiSlice";
 import { ActionPopup } from "../../../components";
 import useStore from "../../../store";
 const CommentContainer = styled(Box, {
-  shouldForwardProp: (props) => props != "open" || props !== 'showEditOptions',
+  shouldForwardProp: (props) => props != "open" && props !== 'showEditOptions',
 })(({ theme, open,showEditOptions }) => ({
   display: "flex",
   gap: theme.spacing(2),
@@ -90,11 +90,9 @@ const CommentContainer = styled(Box, {
 }));
 
 const CommentViewBox = ({ comment}) => {
-  console.log("comment==",comment)
   const [deleteComment, result] = useDeleteCommentMutation();
   const [popOverOpen, setPopOverOpen] = useState(null);
   const user=useStore(state=>state.user)
-  console.log("user",user._id,"comment===",comment.userId,"compare",user._id===comment.userId)
   const {
     setComment,
     comment: stateComment,

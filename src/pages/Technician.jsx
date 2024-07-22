@@ -33,14 +33,6 @@ const Technician = () => {
           <Typography variant="h3" sx={{ color: "var(--primary-color)" }}>
             All Tickets
           </Typography>
-          <Button
-            variant="contained"
-            onClick={() => {
-              // handleTicketDialog(true);
-            }}
-          >
-            Create Tickets
-          </Button>
         </Box>
 
         <TicketTable />

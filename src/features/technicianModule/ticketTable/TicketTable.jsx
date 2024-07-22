@@ -2,7 +2,7 @@ import React,{useEffect} from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, GridRowEditStopReasons } from "@mui/x-data-grid";
 // import { useColumns} from "./useColumns";
-import TicketDrawer from "../editTicket/EditTicket";
+import EditTicket from "../editTicket/EditTicket";
 import { useTheme } from "@mui/material";
 import useStore from "../../../store";
 import { useEditTicketMutation, useGetFilteredCompanyTicketsQuery, useGetTechniciansByCompanyIdQuery,} from "../../../apis/apiSlice";
@@ -50,13 +50,18 @@ export default function TicketTable() {
   const { isLoading, data, isSuccess } =  useGetFilteredCompanyTicketsQuery();
   const [editTicket, result] = useEditTicketMutation();
   const {setTicketId, setCommentList} = useCommentStore((state) => state);
-  const {data:ticketsData,setData,setTechnician}=useTechnicianStore(state=>state)
+  const {data:ticketsData,setData,setTechnician,setTicket}=useTechnicianStore(state=>state)
   const { isLoading:saveLoading, isSuccess:saveSuccess } = result;
-  console.log("ticketsData",ticketsData)
   const handleDrawer = (value) => {
+    if(value){
     setTicketId(value._id);
-    setIsOpen(value);
+    setTicket(value),
+    setIsOpen(Boolean(value));
     setCommentList(value.comments)
+    return 
+    }
+    setIsOpen(value)
+
   };
   const columns=useColumns(handleDrawer,rowModesModel,setRowModesModel)
   const handleRowEditStop = (params, event) => {
@@ -64,19 +69,22 @@ export default function TicketTable() {
   };
 
   const processRowUpdate = async(newRow) => {
-    debugger
+   try{
     const {assignedTo,status,_id}=newRow;
     const filterTechnician=techniciansData.filter(item=>item.name===assignedTo)[0]
     const assignedToValue=filterTechnician?._id ?? ''
     const edit=await editTicket({assignedTo:assignedToValue,status,_id});
     const updatedRow = { ...newRow, isNew: false };
     if(edit.data){
-      setData(ticketsData.map((row) => (row._id === newRow._id ? updatedRow : row)));
+      // setData(ticketsData.map((row) => (row._id === newRow._id ? updatedRow : row)));
       openAlert("Ticket is Updated")
 
     }
     return updatedRow;
-  };
+   }catch(err){
+    openAlert("Error in updating Ticket","error")
+   }
+  }
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -94,11 +102,9 @@ export default function TicketTable() {
   return (
     <>
       {isOpen && (
-        <TicketDrawer
-          initialValues={isOpen}
+        <EditTicket
           handleDrawer={handleDrawer}
           isOpen={isOpen}
-          row={details}
         />
       )}
    

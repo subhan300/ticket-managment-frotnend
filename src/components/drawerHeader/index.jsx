@@ -17,9 +17,6 @@ const DrawerHeader = ({handleTicketDialog,title,children}) => {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h5" component="div">
               {title}
             </Typography>
-            {/* <Button autoFocus color="inherit" onClick={()=>{handleTicketDialog(true)}}>
-              save
-            </Button> */}
             {children}
           </Toolbar>
         </AppBar>

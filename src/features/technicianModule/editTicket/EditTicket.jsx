@@ -1,5 +1,8 @@
 // import React from 'react';
 import Drawer from "@mui/material/Drawer";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 import { styled } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 
@@ -10,7 +13,9 @@ import {
   Grid,
   Typography,
   Backdrop,
-  CircularProgress 
+  CircularProgress,
+  TextField,
+  IconButton,
 } from "@mui/material";
 
 import DrawerHeader from "../../../components/drawerHeader";
@@ -18,8 +23,12 @@ import DrawerHeader from "../../../components/drawerHeader";
 import { useEditTicketMutation } from "../../../apis/apiSlice";
 import useUpload from "../../../hooks/useUpload";
 import { CommentSection } from "../../comment";
+import { useTechnicianStore } from "../store";
+import { Formik, useFormik } from "formik";
+import { statusCollection } from "../../../data";
+import { getFilterTechnician } from "../../../utils";
+import useStore from "../../../store";
 // Constants
-const statuses = ["OPEN", "PROGRESS", "BLOCKED", "CLOSED"];
 const assignedToMembers = ["Not Assigned", "Me", "Jones", "David", "Kingzi"];
 
 const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
@@ -34,73 +43,88 @@ const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
     },
   },
 }));
-const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
-  const {
-    uploadToCloudinary,
-    isLoading: cloudinaryLoading,
-    error: cloudinaryError,
-  } = useUpload();
-  const [edit, setEdit] = useState(false);
+const EditTicketForm = ({  isOpen, handleDrawer }) => {
+ 
+  const { technicians,setEditData,data ,ticket} = useTechnicianStore((state) => state);
+  const {openAlert}=useStore(state=>state)
+  const [edit, setEdit] = useState({ assignedTo: false, status: false ,});
   const [editTicket, result] = useEditTicketMutation();
   const { isLoading, isSuccess } = result;
-  // console.log("initial values", initialValues);
+  console.log("ticket==", ticket,"data",data,"is open==",isOpen);
   const {
     issue,
-    images,
+    images=[],
     description,
-    assignedTo,
+    assignedTo:assignedToValue,
     status,
     issueLocation,
-  } = initialValues;
-  const handleOnFinish =async (values) => {
-    // console.log("values", values);
-    const uploadedImages = await uploadToCloudinary(values.images);
-    console.log("Uploaded Images:", uploadedImages);
-    editTicket({...values,images:uploadedImages});
-    //  navigate("/")
+   
+  } =  ticket;
+  const [assignedTo, setAssignedTo] = useState(assignedToValue);
+
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     setEdit(false);
+  //   }
+  // }, [isSuccess]);
+
+  const formikAssignedTo = useFormik({
+    initialValues: ticket,
+    // validationSchema: validationSchema,
+    // validateOnMount: true,
+    onSubmit: async (values) => {
+      console.log("values", values);
+      const technician=getFilterTechnician(technicians,assignedTo)
+      editTicket({assignedTo:technician._id,_id:values._id});
+      handleEdit("assignedTo",false);
+      setEditData(values)
+
+    },
+  });
+  const formikStatus = useFormik({
+    initialValues: ticket,
+    // validationSchema: validationSchema,
+    // validateOnMount: true,
+    onSubmit: async (values) => {
+      editTicket({status:values.status,_id:values._id});
+      handleEdit("status",false);
+      setEditData(values)
+
+    },
+  });
+  const handleEdit = (name, val) => {
+    setEdit((prev) => ({ ...prev, [name]: val }));
   };
-  useEffect(() => {
-    if (isSuccess) {
-      setEdit(false);
-    }
-  }, [isSuccess]);
+  const handleCancel = (name, val,form) => {
+    form.setValues(ticket);
+    handleEdit(name, val);
+
+
+  };
+
+ useEffect(()=>{
+   if(isSuccess){
+    openAlert("Ticket Updated Successfully")
+   }
+ },[isSuccess])
+  // console.log("formik.values.assignedTo", formik.values.assignedTo);
   return (
     <FullWidthDrawer
       anchor="right"
-      open={Boolean(isOpen)}
+      open={isOpen}
       SlideProps={{
         sx: { width: "auto" },
       }}
       onClose={() => handleDrawer(false)}
     >
-      <DrawerHeader title={"Edit Ticket"} handleTicketDialog={handleDrawer}>
-        <Button
-          // variant="contained"
-          sx={{ color: "white" }}
-          variant="text"
-          onClick={() => {
-            setEdit(!edit);
-          }}
-        >
-          {edit ? "Leave Editing Mode" : "Edit Mode"}
-        </Button>
-
-        {edit && (
-          <Button
-            variant="text"
-            sx={{ marginLeft: "10px", color: "white" }}
-            onClick={() => {
-              setEdit(!edit);
-            }}
-          >
-            save
-          </Button>
-        )}
-      </DrawerHeader>
+      <DrawerHeader
+        title={"Edit Ticket"}
+        handleTicketDialog={handleDrawer}
+      ></DrawerHeader>
 
       <Box sx={{ maxWidth: 800, padding: "22px 12px" }}>
-        {!edit && (
-          <>
+        <>
+         
             <Grid container spacing={4}>
               <Grid xs={12} item>
                 <Typography variant="h5">Issue :</Typography>
@@ -111,14 +135,166 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
                 <Typography variant="h6">{description}</Typography>
               </Grid>
               <Grid xs={12} sm={12} item>
-                <Typography variant="h5">Ticket Assigned :</Typography>
-                <Typography variant="h6">
-                  {assignedTo ? assignedTo : "Not Assigned"}
-                </Typography>
+              <form onSubmit={formikAssignedTo.handleSubmit}>
+                <Box
+                  sx={{display: "flex",justifyContent: "flex-start",
+                    gap: "1rem",
+                    alignItems: "center",
+                  }}
+                >
+                 
+                  <Typography variant="h5">Ticket Assigned</Typography>
+                  {!edit.assignedTo && (
+                    <IconButton
+                      edge="start"
+                      color="inherit"
+                      onClick={() => {
+                        handleEdit("assignedTo", true);
+                      }}
+                      aria-label="close"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  )}
+                  {edit.assignedTo && (
+                    <>
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                      
+                        type="submit"
+                        aria-label="close"
+                      >
+                        <SaveIcon />
+                      </IconButton>
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                        onClick={() => {
+                          handleCancel("assignedTo", false,formikAssignedTo);
+                        }}
+                        aria-label="close"
+                        
+                      >
+                        <CancelIcon />
+                      </IconButton>
+                    </>
+                  )}
+                </Box>
+                {edit.assignedTo && (
+                  <Box>
+                    <TextField
+                      select
+                      fullWidth
+                      id="assignedTo"
+                      name="assignedTo"
+                      label="Assigned"
+                      onChange={formikAssignedTo.handleChange}
+                      value={formikAssignedTo.values.assignedTo}
+
+                      // error={formik.touched.status && Boolean(formik.errors.status)}
+                      // helperText={formik.touched.status && formik.errors.status}
+                    >
+                      {technicians.map((option) => (
+                        <MenuItem
+                          onChange={() => {
+                          setAssignedTo(option._id);
+                          }}
+                          key={option._id}
+                          value={option.name}
+                        >
+                          {option.name}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Box>
+                )}
+                {!edit.assignedTo && (
+                  <Typography variant="h6">
+                    {assignedTo ? assignedTo : "Not Assigned"}
+                  </Typography>
+                )}
+                </form>
               </Grid>
               <Grid xs={12} sm={12} item>
-                <Typography variant="h5">Status :</Typography>
-                <Typography variant="h6">{status}</Typography>
+                <form onSubmit={formikStatus.handleSubmit}>
+                <Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      gap: "1rem",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="h5">Status</Typography>
+                    {!edit.status && (
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                        onClick={() => {
+                          handleEdit("status", true);
+                        }}
+                        aria-label="close"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    )}
+                    {edit.status && (
+                      <>
+                        <IconButton
+                          edge="start"
+                          color="inherit"
+                          
+                          aria-label="close"
+                          type="submit"
+                        >
+                          <SaveIcon />
+                        </IconButton>
+                        <IconButton
+                          edge="start"
+                          color="inherit"
+                          onClick={() => {
+                            handleCancel("status", false,formikStatus);
+                          }}
+                          aria-label="close"
+                        >
+                          <CancelIcon />
+                        </IconButton>
+                      </>
+                    )}
+                  </Box>
+                </Box>
+                {edit.status && (
+                  <Box>
+                    <TextField
+                      select
+                      fullWidth
+                      id="status"
+                      name="status"
+                      label="Status"
+                      value={formikStatus.values.status}
+                      onChange={formikStatus.handleChange}
+
+                      // error={formik.touched.status && Boolean(formik.errors.status)}
+                      // helperText={formik.touched.status && formik.errors.status}
+                    >
+                      {statusCollection.map((option) => (
+                        <MenuItem
+                          onChange={() => {
+                            handleChange(option);
+                          }}
+                          key={option}
+                          value={option}
+                        >
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Box>
+                )}
+                {!edit.status && <Typography variant="h6">{status}</Typography>}
+                </form>
               </Grid>
               <Grid xs={12} sm={12} item>
                 <Typography variant="h5">Attachments</Typography>
@@ -162,28 +338,11 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
                 </Typography>
               </Grid>
             </Grid>
-            <Box sx={{marginTop:"3rem"}}>
-              <Typography variant="h5">Comments:</Typography>
-            <CommentSection  />
-            </Box>
-          </>
-        )}
-        {edit && (
-          <>
-           <Backdrop
-          sx={{ display:"flex",justifyContent:"center",alignItems:"center",color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isLoading || cloudinaryLoading}
-          // onClick={handleClose}
-        >
-          <CircularProgress color="inherit" />
-          </Backdrop>
-            {/* <TicketForm
-              handleOnFinish={handleOnFinish}
-              initialValues={initialValues}
-            /> */}
-          </>
-        )}
-    
+          <Box sx={{ marginTop: "3rem" }}>
+            <Typography variant="h5">Comments:</Typography>
+            <CommentSection />
+          </Box>
+        </>
       </Box>
     </FullWidthDrawer>
   );
