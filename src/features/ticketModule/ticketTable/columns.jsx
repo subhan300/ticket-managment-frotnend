@@ -1,6 +1,7 @@
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import dayjs from "dayjs";
+import { NotAssigned } from "../../../helper";
 
 
 export const columns = (handleDrawer) => [
@@ -23,8 +24,8 @@ export const columns = (handleDrawer) => [
     field: "assignedTo",
     headerName: "Assigned To",
     flex:2,
-    valueGetter: (params) => {
-      return params?params :"not assigned"
+    valueGetter: ({name}) => {
+      return name?name :NotAssigned
     },
 
   },

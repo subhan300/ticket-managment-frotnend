@@ -32,7 +32,7 @@ import useStore from "../../../store";
 const assignedToMembers = ["Not Assigned", "Me", "Jones", "David", "Kingzi"];
 
 const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
-  border: "1px solid red",
+  // border: "1px solid red",
   "& .MuiDrawer-paper": {
     // width: "100%",
     boxSizing: "border-box",
@@ -50,17 +50,16 @@ const EditTicketForm = ({  isOpen, handleDrawer }) => {
   const [edit, setEdit] = useState({ assignedTo: false, status: false ,});
   const [editTicket, result] = useEditTicketMutation();
   const { isLoading, isSuccess } = result;
-  console.log("ticket==", ticket,"data",data,"is open==",isOpen);
+  // console.log("ticket==", ticket,"data",data,"is open==",isOpen);
   const {
     issue,
     images=[],
     description,
-    assignedTo:assignedToValue,
+    assignedTo,
     status,
     issueLocation,
    
   } =  ticket;
-  const [assignedTo, setAssignedTo] = useState(assignedToValue);
 
   // useEffect(() => {
   //   if (isSuccess) {
@@ -69,20 +68,22 @@ const EditTicketForm = ({  isOpen, handleDrawer }) => {
   // }, [isSuccess]);
 
   const formikAssignedTo = useFormik({
-    initialValues: ticket,
+    initialValues: {...ticket,assignedTo:assignedTo._id},
     // validationSchema: validationSchema,
     // validateOnMount: true,
     onSubmit: async (values) => {
-      console.log("values", values);
-      const technician=getFilterTechnician(technicians,assignedTo)
-      editTicket({assignedTo:technician._id,_id:values._id});
+      // const technician=getFilterTechnician(technicians,values.assignedTo)
+     const editRes=await editTicket({assignedTo:values.assignedTo,_id:values._id});
+     if(editRes?.data){
       handleEdit("assignedTo",false);
-      setEditData(values)
+      setEditData(editRes.data)
+     }
+     
 
     },
   });
   const formikStatus = useFormik({
-    initialValues: ticket,
+    initialValues: {...ticket,assignedTo:assignedTo._id},
     // validationSchema: validationSchema,
     // validateOnMount: true,
     onSubmit: async (values) => {
@@ -107,6 +108,7 @@ const EditTicketForm = ({  isOpen, handleDrawer }) => {
     openAlert("Ticket Updated Successfully")
    }
  },[isSuccess])
+ console.log("tikcet===",ticket)
   // console.log("formik.values.assignedTo", formik.values.assignedTo);
   return (
     <FullWidthDrawer
@@ -197,11 +199,9 @@ const EditTicketForm = ({  isOpen, handleDrawer }) => {
                     >
                       {technicians.map((option) => (
                         <MenuItem
-                          onChange={() => {
-                          setAssignedTo(option._id);
-                          }}
+                         
                           key={option._id}
-                          value={option.name}
+                          value={option._id}
                         >
                           {option.name}
                         </MenuItem>
@@ -211,7 +211,7 @@ const EditTicketForm = ({  isOpen, handleDrawer }) => {
                 )}
                 {!edit.assignedTo && (
                   <Typography variant="h6">
-                    {assignedTo ? assignedTo : "Not Assigned"}
+                    {assignedTo ? assignedTo.name : "Not Assigned"}
                   </Typography>
                 )}
                 </form>

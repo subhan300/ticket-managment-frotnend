@@ -70,13 +70,14 @@ export default function TicketTable() {
 
   const processRowUpdate = async(newRow) => {
    try{
+    // debugger
     const {assignedTo,status,_id}=newRow;
     const filterTechnician=techniciansData.filter(item=>item.name===assignedTo)[0]
     const assignedToValue=filterTechnician?._id ?? ''
     const edit=await editTicket({assignedTo:assignedToValue,status,_id});
-    const updatedRow = { ...newRow, isNew: false };
+    const updatedRow = { ...edit.data, isNew: false };
     if(edit.data){
-      // setData(ticketsData.map((row) => (row._id === newRow._id ? updatedRow : row)));
+      setData(ticketsData.map((row) => (row._id === newRow._id ? updatedRow : row)));
       openAlert("Ticket is Updated")
 
     }

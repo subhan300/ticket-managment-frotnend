@@ -63,11 +63,13 @@ export const useColumns = (handleDrawer, rowModesModel, setRowModesModel) => {
       flex: 2,
       editable: true,
       type: "singleSelect",
+      valueOptions: [{ name: NotAssigned, _id: "", value: "" }, ...technicians],
       getOptionValue: (option) => option.name,
       getOptionLabel: (option) => option.name,
-      valueOptions: [{ name: NotAssigned, _id: "", value: "" }, ...technicians],
+      
       valueGetter: (params, row) => {
-        return params !== "" ? params : NotAssigned;
+        // console.log("params==",params)
+        return params.name !== "" ? params.name : NotAssigned;
       },
     },
     {

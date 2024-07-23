@@ -114,7 +114,7 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
               <Grid xs={12} sm={12} item>
                 <Typography variant="h5">Ticket Assigned :</Typography>
                 <Typography variant="h6">
-                  {assignedTo ? assignedTo : "Not Assigned"}
+                  {assignedTo.name ? assignedTo.name : "Not Assigned"}
                 </Typography>
               </Grid>
               <Grid xs={12} sm={12} item>

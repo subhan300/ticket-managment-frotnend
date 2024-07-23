@@ -24,6 +24,7 @@ import { FileUploader } from "../../../components";
 import { dateFormat } from "../../../utils";
 import { CloudUpload,Delete } from "@mui/icons-material";
 import {  statusCollection } from "../../../data";
+import { NotAssigned } from "../../../helper";
 
 
 
@@ -43,18 +44,17 @@ const validationSchema = Yup.object({
 const TicketForm = ({ initialValues, handleOnFinish }) => {
   // console.log("initial values===", initialValues);
   const user = useStore((state) => state.user);
-
+  
   const [unitId, setUnitId] = useState(initialValues.issueLocation.unit);
-  const [assignedTo, setAssignedTo] = useState(initialValues.assignedTo);
   const [imgFiles, setImgFiles] = useState([]);
  
   const { data: units, isLoading: unitsLoading } = useGetUnitsQuery(  user.companyId );
   const { data: technicians, isLoading: technicianLoading,} = useGetTechniciansByCompanyIdQuery(user.companyId);
 
   const [fetchUserData, { isLoading: roomsLoading, data: roomsData, error, isSuccess: roomsSuccess,},] = apiSlice.endpoints.getRooms.useLazyQuery(useGetRoomsQuery); // Replace with your actual query
-  
+  console.log("technica",technicians  )
   const formik = useFormik({
-    initialValues: initialValues,
+    initialValues: {...initialValues,assignedTo:initialValues.assignedTo._id},
     validationSchema: validationSchema,
     validateOnMount: true,
     onSubmit: async(values) => {
@@ -64,19 +64,20 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
         unit: unitId,
         
       };
-      handleOnFinish({...values,assignedTo,images:imgFiles});
+      debugger
+      handleOnFinish({...values,images:imgFiles});
     },
   });
 
   useEffect(() => {
-    console.log("runing====");
     if (formik.values.issueLocation.unit) {
       fetchUserData(unitId._id);
     }
   }, [unitId]);
 
   // console.log("loading===", technicianLoading, roomsLoading, unitsLoading);
-  console.log("formik",formik.isValid)
+  // console.log("formik",formik.isValid)
+  console.log("formik",formik.values)
   return (
     <Box sx={{ maxWidth: 800, mx: "auto" }}>
      
@@ -154,15 +155,11 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
                 // helperText={formik.touched.status && formik.errors.status}
               >
                 {!technicianLoading ? (
-                  [{ name: "Not Assigned", _id: "" }, ...technicians].map(
+                  [{ name: NotAssigned, _id: "" }, ...technicians].map(
                     (option) => (
                       <MenuItem
-                        onClick={() => {
-                          console.log("options===",option)
-                          setAssignedTo(option._id);
-                        }}
                         key={option.name}
-                        value={option.name}
+                        value={option._id}
                       >
                         {option.name}
                       </MenuItem>

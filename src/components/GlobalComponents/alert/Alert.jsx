@@ -21,10 +21,10 @@ const Alerts = () => {
   const { open, message, severity, closeAlert } = useStore();
 
   useEffect(() => {
-    // if (open) {
-    //   const timeoutId = setTimeout(() => closeAlert(), 1200); // Close after 12 seconds
-    //   return () => clearTimeout(timeoutId); // Cleanup function
-    // }
+    if (open) {
+      const timeoutId = setTimeout(() => closeAlert(), 1200); // Close after 12 seconds
+      return () => clearTimeout(timeoutId); // Cleanup function
+    }
   }, [open, closeAlert]);
 
   if (!open) return null; // Don't render if alert is closed

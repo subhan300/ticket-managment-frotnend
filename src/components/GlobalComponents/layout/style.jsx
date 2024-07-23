@@ -18,7 +18,7 @@ export const BoxContent=styled(Box)`
 `
 export const LayoutStyle = styled.div`
   .dashboard_layout {
-    border: 1px solid red;
+    /* border: 1px solid red; */
   }
 
   .dasboard_content {

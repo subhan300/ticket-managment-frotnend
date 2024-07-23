@@ -61,7 +61,7 @@ const CommentContainer = styled(Box, {
     gap: "4px",
     visibility: open && showEditOptions ? "visible" : "hidden",
     "& .popup_btns": {
-      border: "1p solid red",
+      // border: "1p solid red",
       display: "flex",
       marginTop: "10px",
       gap: "4px",
@@ -82,7 +82,7 @@ const CommentContainer = styled(Box, {
     gap: "8px",
     "& .MuiBox-root": {
       width: "160px",
-      border: "1px solid red",
+      // border: "1px solid red",
       height: "160px",
       marginTop: "1rem",
     },
