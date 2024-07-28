@@ -49,7 +49,6 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
  
   const { data: units, isLoading: unitsLoading } = useGetUnitsQuery(  user.companyId );
   const { data: technicians, isLoading: technicianLoading,} = useGetTechniciansByCompanyIdQuery(user.companyId);
-
   const [fetchUserData, { isLoading: roomsLoading, data: roomsData, error, isSuccess: roomsSuccess,},] = apiSlice.endpoints.getRooms.useLazyQuery(useGetRoomsQuery); // Replace with your actual query
   const formik = useFormik({
     initialValues: {...initialValues,assignedTo:initialValues.assignedTo._id},

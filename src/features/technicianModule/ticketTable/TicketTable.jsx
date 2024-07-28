@@ -78,9 +78,7 @@ export default function TicketTable() {
     const updatedRow = { ...edit.data, isNew: false };
     if(edit.data){
       const filterData=()=>{
-        console.log({ticketsData})
         const filterdata=ticketsData.map((row) => (row._id === newRow._id ? updatedRow : row));
-        console.log({filterdata})
         return filterdata
 
       }

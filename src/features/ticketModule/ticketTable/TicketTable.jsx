@@ -1,12 +1,13 @@
-import * as React from "react";
+import  React,{useEffect,useState} from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import { columns, data, details } from "./columns";
+import { columns, data,} from "./columns";
 import TicketDrawer from "../editTicket/EditTicketForm";
 import { useTheme } from "@mui/material";
 import useStore from "../../../store";
 import { useGetTicketsByUserIdQuery } from "../../../apis/apiSlice";
 import useCommentStore from "../../comment/store/CommentStore";
+import useUserStore from "../store/UserStore";
 
 const initialValue = {
   userId: "12345", // Replace with actual user ID
@@ -26,37 +27,38 @@ const initialValue = {
 
 export default function TicketTable() {
 
-  const [isOpen, setIsOpen] = React.useState(false);
-  const theme = useTheme();
+  const [isOpen, setIsOpen] = useState(false);
   const user = useStore((state) => state.user);
+  const {data:ticketsData,setData, setTicket}=useUserStore(state=>state)
   const { isLoading, data ,isSuccess} = useGetTicketsByUserIdQuery(user._id);
   const {setTicketId,setCommentList}=useCommentStore(state=>state)
-  
-  
-  // console.log("islaoding",isLoading,"api======",api,"=====",isSuccess)
-  // console.log("data===",data)
+  // console.log("data",data)
   const handleDrawer = (value) => {
+   if(value){
     setTicketId(value._id)
     setCommentList(value.comments)
-    setIsOpen(value);
+    setIsOpen(true);
+    setTicket(value)
+   }else{
+    setIsOpen(false)
+   }
 
-    
-    // console.log("iso", isOpen, "---", value);
   };
 
+  useEffect(()=>{
+     if(isSuccess){
+         setData(data)
+     }
+  },[isSuccess])
   return (
     <>
       {isOpen && (
         <TicketDrawer
-          initialValues={isOpen}
           handleDrawer={handleDrawer}
           isOpen={isOpen}
-          row={details}
         />
       )}
-        {/* <Comment ticketId={ticket._id} comments={ticket.comments} /> */}
-      <Box sx={{ width: "100%",overflowX: "auto", // Enable horizontal scrolling
-            }}>
+      <Box sx={{ width: "100%",overflowX: "auto",  }}>
         <DataGrid
           sx={{
             overflowX: "auto", // Enable horizontal scrolling
@@ -66,7 +68,7 @@ export default function TicketTable() {
             "& .MuiDataGrid-filler": { backgroundColor: "var(--table-header)" },
           }}
           loading={isLoading}
-          rows={!isSuccess?[]:data}
+          rows={ticketsData}
           getRowId={(row) => row?._id}
         
 

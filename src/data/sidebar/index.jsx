@@ -123,7 +123,6 @@ export const ticketInitialValues = {
   issueLocation: {
     locationName: "",
     unit: "",
-
     room: "",
     extraDetail: "",
   },

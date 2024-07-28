@@ -18,33 +18,32 @@ import TicketForm from "../ticketForm/TicketForm";
 import { useEditTicketMutation } from "../../../apis/apiSlice";
 import useUpload from "../../../hooks/useUpload";
 import { CommentSection } from "../../comment";
-// Constants
-const statuses = ["OPEN", "PROGRESS", "BLOCKED", "CLOSED"];
-const assignedToMembers = ["Not Assigned", "Me", "Jones", "David", "Kingzi"];
+import useUserStore from "../store/UserStore";
+import useStore from "../../../store";
+
 
 const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
-  // border: "1px solid red",
   "& .MuiDrawer-paper": {
-    // width: "100%",
     minWidth:"600px",
     boxSizing: "border-box",
     backgroundColor: "white",
-    // marginTop:"10px",
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
   },
 }));
-const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
+const EditTicketForm = ({ isOpen, handleDrawer }) => {
   const {
     uploadToCloudinary,
     isLoading: cloudinaryLoading,
     error: cloudinaryError,
   } = useUpload();
   const [edit, setEdit] = useState(false);
+  const {openAlert}=useStore(state=>state)
   const [editTicket, result] = useEditTicketMutation();
   const { isLoading, isSuccess } = result;
-  // console.log("initial values", initialValues);
+  const {setEditData,ticket:initialValues}=useUserStore(state=>state)
+  // console.log("initial values=============>", initialValues);
   const {
     issue,
     images,
@@ -54,18 +53,19 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
     issueLocation,
   } = initialValues;
   const handleOnFinish =async (values) => {
-    console.log("values", values);
     const uploadedImages = await uploadToCloudinary(values.images);
-    console.log("Uploaded Images:", uploadedImages);
     
-    editTicket({...values,images:uploadedImages});
+   const editRes=await editTicket({...values,images:uploadedImages});
+   if (editRes?.data) {
+    setEditData(editRes.data);
+    openAlert("Ticket Updated SuccessFully")
+    setEdit(false)
+  }else{
+    openAlert("Error Updating Ticket","error")
+  }
     //  navigate("/")
   };
-  useEffect(() => {
-    if (isSuccess) {
-      setEdit(false);
-    }
-  }, [isSuccess]);
+
   return (
     <FullWidthDrawer
       anchor="right"
@@ -87,7 +87,7 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
           {edit ? "Leave Editing Mode" : "Edit Mode"}
         </Button>
 
-        {edit && (
+        {/* {edit && (
           <Button
             variant="text"
             sx={{ marginLeft: "10px", color: "white" }}
@@ -97,7 +97,7 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
           >
             save
           </Button>
-        )}
+        )} */}
       </DrawerHeader>
 
       <Box sx={{ maxWidth: 800, padding: "22px 12px" }}>
@@ -115,7 +115,7 @@ const EditTicketForm = ({ initialValues, isOpen, handleDrawer }) => {
               <Grid xs={12} sm={12} item>
                 <Typography variant="h5">Ticket Assigned :</Typography>
                 <Typography variant="h6">
-                  {assignedTo.name ? assignedTo.name : "Not Assigned"}
+                  {assignedTo?.name}
                 </Typography>
               </Grid>
               <Grid xs={12} sm={12} item>

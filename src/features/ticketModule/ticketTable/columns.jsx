@@ -152,14 +152,14 @@ export const data = [
   },
 ];
 
-export const details = {
-  id: "1",
-  userName: "John Doe",
-  userEmail: "john@example.com",
-  userRole: "user",
-  issue: "Login Issue",
-  description: "Unable to login to the system",
-  status: "OPEN",
-  createdAt: "2023-01-01T10:00:00Z",
-  updatedAt: "2023-01-02T11:00:00Z",
-};
+// export const details = {
+//   id: "1",
+//   userName: "John Doe",
+//   userEmail: "john@example.com",
+//   userRole: "user",
+//   issue: "Login Issue",
+//   description: "Unable to login to the system",
+//   status: "OPEN",
+//   createdAt: "2023-01-01T10:00:00Z",
+//   updatedAt: "2023-01-02T11:00:00Z",
+// };
