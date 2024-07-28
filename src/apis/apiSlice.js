@@ -45,6 +45,12 @@ export const apiSlice = createApi({
       query: () => `/ticket/getAll`,
       providesTags: ["ticket"],
     }),
+    getInventoryItems: builder.query({
+      query: () => `/inventory/company/short-details/items`,
+      // providesTags: ["ticket"],
+    })
+    ,
+
     createTicket: builder.mutation({
       query: (payload) => ({
         url: `/ticket/create/`,
@@ -110,4 +116,5 @@ export const {
   useEditCommentMutation,
   useDeleteCommentMutation,
   useAddCommentMutation,
+  useGetInventoryItemsQuery
 } = apiSlice;

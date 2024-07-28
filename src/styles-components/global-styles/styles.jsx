@@ -8,3 +8,10 @@ export const flexBetween = {
     justifyContent: "space-between",
     alignItems: "center",
   };
+
+  export const flexAlignStart={
+  display: "flex",
+  justifyContent: "flex-start",
+  gap: "1rem",
+  alignItems: "center",
+  }

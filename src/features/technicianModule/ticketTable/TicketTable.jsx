@@ -50,7 +50,7 @@ export default function TicketTable() {
   const { isLoading, data, isSuccess } =  useGetFilteredCompanyTicketsQuery();
   const [editTicket, result] = useEditTicketMutation();
   const {setTicketId, setCommentList} = useCommentStore((state) => state);
-  const {data:ticketsData,setData,setTechnician,setTicket}=useTechnicianStore(state=>state)
+  const {data:ticketsData,setData,setTechnician,setTicket,ticket}=useTechnicianStore(state=>state)
   const { isLoading:saveLoading, isSuccess:saveSuccess } = result;
   const handleDrawer = (value) => {
     if(value){
@@ -67,17 +67,24 @@ export default function TicketTable() {
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {event.defaultMuiPrevented = true; }
   };
-
+  
   const processRowUpdate = async(newRow) => {
    try{
     // debugger
-    const {assignedTo,status,_id}=newRow;
-    const filterTechnician=techniciansData.filter(item=>item.name===assignedTo)[0]
-    const assignedToValue=filterTechnician?._id ?? ''
-    const edit=await editTicket({assignedTo:assignedToValue,status,_id});
+    const {assignedToColumn,status,_id}=newRow;
+    // const filterTechnician=techniciansData.filter(item=>item.name===assignedTo)[0]
+    // const assignedToValue=filterTechnician?._id ?? ''
+    const edit=await editTicket({assignedTo:assignedToColumn,status,_id});
     const updatedRow = { ...edit.data, isNew: false };
     if(edit.data){
-      setData(ticketsData.map((row) => (row._id === newRow._id ? updatedRow : row)));
+      const filterData=()=>{
+        console.log({ticketsData})
+        const filterdata=ticketsData.map((row) => (row._id === newRow._id ? updatedRow : row));
+        console.log({filterdata})
+        return filterdata
+
+      }
+      setData(filterData());
       openAlert("Ticket is Updated")
 
     }
@@ -86,12 +93,14 @@ export default function TicketTable() {
     openAlert("Error in updating Ticket","error")
    }
   }
+  
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
  useEffect(()=>{
     if(isSuccess){
+      // const dataFormat=data.map(val=>({...val,assignedToColumn:val.assignedTo._id}))
       setData(data)
     }
  },[isSuccess])

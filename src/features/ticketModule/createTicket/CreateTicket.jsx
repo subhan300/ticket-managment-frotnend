@@ -4,12 +4,12 @@ import Slide from "@mui/material/Slide";
 import TicketForm from "../ticketForm/TicketForm";
 import { Backdrop, Box, CircularProgress } from "@mui/material";
 import DrawerHeader from "../../../components/drawerHeader";
-import { ticketInitialValues } from "../../../data/sidebar";
 import useStore from "../../../store";
 import { useCreateTicketMutation } from "../../../apis/apiSlice";
 import useCustomNavigate from "../../../hooks/useCustomNavigate";
 import Alert from "../../../components/GlobalComponents/alert/Alert";
 import useUpload from "../../../hooks/useUpload";
+import { ticketInitialValues } from "../../../data";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -25,14 +25,14 @@ export default function CreateTicket({ isOpen, handleTicketDialog }) {
   } = useUpload();
 
   const { isLoading, isSuccess } = result;
-  const user = useStore((state) => state.user);
+  const {user, openAlert} = useStore((state) => state);
   const handleOnFinish = async (values) => {
     const uploadedImages = await uploadToCloudinary(values.images);
     createTicket({ ...values, images: uploadedImages });
-    //  navigate("/")
   };
   useEffect(() => {
     if (isSuccess) {
+      openAlert("Ticket is Successfully Created")
       handleTicketDialog(false);
     }
   }, [isSuccess]);

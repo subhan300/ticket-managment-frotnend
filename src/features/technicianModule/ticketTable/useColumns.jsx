@@ -8,7 +8,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import dayjs from "dayjs";
 import { useTechnicianStore } from "../store";
 import useStore from "../../../store";
-import { COMPLETED, NotAssigned, OPEN, PROGRESS } from "../../../helper";
+import { COMPLETED, NotAssigned, NotAssignedId, OPEN, PROGRESS } from "../../../helper";
 import { statusCollection} from "../../../data";
 
 export const useColumns = (handleDrawer, rowModesModel, setRowModesModel) => {
@@ -58,20 +58,21 @@ export const useColumns = (handleDrawer, rowModesModel, setRowModesModel) => {
     },
 
     {
-      field: "assignedTo",
+      field: "assignedToColumn",
       headerName: "Assigned To",
       flex: 2,
       editable: true,
       type: "singleSelect",
-      valueOptions: [{ name: NotAssigned, _id: "", value: "" }, ...technicians],
-      getOptionValue: (option) => option.name,
+      valueOptions: [{ name: NotAssigned, _id:NotAssignedId,  }, ...technicians],
+      getOptionValue: (option) => option._id,
       getOptionLabel: (option) => option.name,
-      
-      valueGetter: (params, row) => {
-        // console.log("params==",params)
-        return params.name !== "" ? params.name : NotAssigned;
-      },
+      // valueFormatter: (params) => params._id,
     },
+      // valueGetter: (params, row) => {
+      //   // debugger
+      //   return params.name !== NotAssigned ? params.name : NotAssigned;
+      // },
+    
     {
       field: "issue",
       headerName: "Issue",

@@ -1,6 +1,6 @@
 import PhotoFilterOutlinedIcon from "@mui/icons-material/PhotoFilterOutlined";
 import AppsOutlinedIcon from "@mui/icons-material/AppsOutlined";
-import { MANAGER, TECHNICIAN } from "../../helper/constants";
+import { MANAGER, NotAssigned, NotAssignedId, TECHNICIAN } from "../../helper/constants";
 import { Typography } from "@mui/material";
 export const managerSideBar = () => {
   return [
@@ -115,20 +115,17 @@ export const OrdersData = [
 // }
 
 export const ticketInitialValues = {
-  userId: "66815c42b060e5455702faaf",
-  issue: "issue in room 3003 in light",
-  description: "room issue in light anf bulb",
-  images: [
-    "https://www.shutterstock.com/image-vector/scan-pay-woman-sits-next-shopping-2305807205",
-  ],
+  issue: "",
+  description: "",
+  images: [],
   status: "OPEN",
-  assignedTo: "",
+  assignedTo: {_id:NotAssignedId,name:NotAssigned},
   issueLocation: {
     locationName: "",
     unit: "",
 
     room: "",
-    extraDetail: "room is at first floor , near from main entrance of building",
+    extraDetail: "",
   },
 };
 // "unit":{"name":"Basement","_id":"66886e4c18ad94b85531ac4f"},

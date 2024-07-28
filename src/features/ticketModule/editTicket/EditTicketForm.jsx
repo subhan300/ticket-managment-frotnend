@@ -23,9 +23,10 @@ const statuses = ["OPEN", "PROGRESS", "BLOCKED", "CLOSED"];
 const assignedToMembers = ["Not Assigned", "Me", "Jones", "David", "Kingzi"];
 
 const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
-  border: "1px solid red",
+  // border: "1px solid red",
   "& .MuiDrawer-paper": {
     // width: "100%",
+    minWidth:"600px",
     boxSizing: "border-box",
     backgroundColor: "white",
     // marginTop:"10px",

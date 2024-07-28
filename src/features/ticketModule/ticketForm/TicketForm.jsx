@@ -42,7 +42,6 @@ const validationSchema = Yup.object({
 });
 
 const TicketForm = ({ initialValues, handleOnFinish }) => {
-  // console.log("initial values===", initialValues);
   const user = useStore((state) => state.user);
   
   const [unitId, setUnitId] = useState(initialValues.issueLocation.unit);
@@ -52,19 +51,16 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
   const { data: technicians, isLoading: technicianLoading,} = useGetTechniciansByCompanyIdQuery(user.companyId);
 
   const [fetchUserData, { isLoading: roomsLoading, data: roomsData, error, isSuccess: roomsSuccess,},] = apiSlice.endpoints.getRooms.useLazyQuery(useGetRoomsQuery); // Replace with your actual query
-  console.log("technica",technicians  )
   const formik = useFormik({
     initialValues: {...initialValues,assignedTo:initialValues.assignedTo._id},
     validationSchema: validationSchema,
     validateOnMount: true,
     onSubmit: async(values) => {
-
       values.issueLocation = {
         ...values.issueLocation,
         unit: unitId,
         
       };
-      debugger
       handleOnFinish({...values,images:imgFiles});
     },
   });
@@ -75,9 +71,7 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
     }
   }, [unitId]);
 
-  // console.log("loading===", technicianLoading, roomsLoading, unitsLoading);
-  // console.log("formik",formik.isValid)
-  console.log("formik",formik.values)
+  
   return (
     <Box sx={{ maxWidth: 800, mx: "auto" }}>
      
@@ -155,7 +149,7 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
                 // helperText={formik.touched.status && formik.errors.status}
               >
                 {!technicianLoading ? (
-                  [{ name: NotAssigned, _id: "" }, ...technicians].map(
+                  [{ name: NotAssigned, _id: "NotAssigned" }, ...technicians].map(
                     (option) => (
                       <MenuItem
                         key={option.name}

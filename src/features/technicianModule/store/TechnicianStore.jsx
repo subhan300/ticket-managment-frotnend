@@ -4,7 +4,9 @@ const useTechnicianStore = create((set) => ({
   data:[],
   isLoading: false,
   technicians:[],
-  ticket:{},
+  ticket:{
+
+},
   setCommentList: (payloadComments) => {
     set((state) => ({
       commentList: payloadComments,
