@@ -42,12 +42,10 @@ const validationSchema = Yup.object({
 const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
   const user = useStore((state) => state.user);
 
-  const [unitId, setUnitId] = useState(initialValues.issueLocation.unit);
+  const [unitOption, setUnitOption] = useState(initialValues.issueLocation.unit);
   const [imgFiles, setImgFiles] = useState([]);
 
-  const { data: units, isLoading: unitsLoading } = useGetUnitsQuery(
-    user.companyId
-  );
+  const { data: units, isLoading: unitsLoading } = useGetUnitsQuery( user.companyId);
   const {
     data: technicians,
     isLoading: technicianLoading,
@@ -65,16 +63,21 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
     initialValues: {
       ...initialValues,
       assignedTo: initialValues.assignedTo._id,
+      issueLocation:{
+        ...initialValues.issueLocation,
+        unit:initialValues.issueLocation.unit._id
+      }
     },
     validationSchema: validationSchema,
     validateOnMount: true,
     onSubmit: async (values) => {
+      debugger
       if (edit) {
        
         let finalValues = handleReturnUpdatedValues(initialValues, values);
         finalValues.issueLocation = {
           ...values.issueLocation,
-          unit: unitId,
+          unit: unitOption,
         };
         console.log("final val=", finalValues);
         if(imgFiles.length){
@@ -84,19 +87,19 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
       } else {
         values.issueLocation = {
           ...values.issueLocation,
-          unit: unitId,
+          unit: unitOption,
         };
         handleOnFinish({ ...values, images: imgFiles });
       }
     },
   });
-
+   console.log("initial values",initialValues)
   useEffect(() => {
-    if (formik.values.issueLocation.unit && unitId._id) {
+    if (formik.values.issueLocation.unit && unitOption._id) {
       
-      fetchUserData(unitId._id);
+      fetchUserData(unitOption._id);
     }
-  }, [unitId]);
+  }, [unitOption]);
 
   return (
     <Box sx={{ maxWidth: 800, mx: "auto" }}>
@@ -282,7 +285,7 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
                 //   value: ""
                 // }}
                 value={
-                  formik.values.issueLocation.unit?.name ||
+                  // formik.values.issueLocation.unit?.name ||
                   formik.values.issueLocation.unit
                 }
                 onChange={formik.handleChange}
@@ -303,11 +306,11 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
                       <MenuItem
                         onClick={(e) => {
                           formik.setFieldValue("issueLocation.room", "");
-                          setUnitId(option);
+                          setUnitOption(option);
                           // console.log("menue=====",e)
                         }}
                         key={option.name}
-                        value={option.name}
+                        value={option._id}
                       >
                         {option.name}
                       </MenuItem>

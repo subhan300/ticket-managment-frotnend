@@ -51,6 +51,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
     status,
     issueLocation,
   } = initialValues;
+  console.log("issur",issueLocation)
   const handleOnFinish = async (values) => {
     try {
       if (values.images) {

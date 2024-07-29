@@ -115,15 +115,15 @@ export const OrdersData = [
 // }
 
 export const ticketInitialValues = {
-  issue: "askldklas",
-  description: "asdnns",
+  issue: "issue",
+  description: "issue ind escription",
   images: [],
   status: "OPEN",
   assignedTo: {_id:NotAssignedId,name:NotAssigned},
   issueLocation: {
     locationName: "",
-    unit: "Basement",
-    room: "1042",
+    unit:{name:"",_id:""},
+    room: "",
     extraDetail: "",
   },
 };
