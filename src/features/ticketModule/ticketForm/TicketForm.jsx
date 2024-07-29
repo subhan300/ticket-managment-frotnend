@@ -10,9 +10,9 @@ import {
   Grid,
   Typography,
   IconButton,
-  Paper
+  Paper,
 } from "@mui/material";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   useGetRoomsQuery,
   useGetUnitsQuery,
@@ -21,12 +21,10 @@ import {
 } from "../../../apis/apiSlice";
 import useStore from "../../../store";
 import { FileUploader } from "../../../components";
-import { dateFormat } from "../../../utils";
-import { CloudUpload,Delete } from "@mui/icons-material";
-import {  statusCollection } from "../../../data";
+import { dateFormat, handleReturnUpdatedValues } from "../../../utils";
+import { CloudUpload, Delete } from "@mui/icons-material";
+import { statusCollection } from "../../../data";
 import { NotAssigned } from "../../../helper";
-
-
 
 const validationSchema = Yup.object({
   // userId: Yup.string().required('User ID is required'),
@@ -41,43 +39,81 @@ const validationSchema = Yup.object({
   }),
 });
 
-const TicketForm = ({ initialValues, handleOnFinish }) => {
+const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
   const user = useStore((state) => state.user);
-  
+
   const [unitId, setUnitId] = useState(initialValues.issueLocation.unit);
   const [imgFiles, setImgFiles] = useState([]);
- 
-  const { data: units, isLoading: unitsLoading } = useGetUnitsQuery(  user.companyId );
-  const { data: technicians, isLoading: technicianLoading,} = useGetTechniciansByCompanyIdQuery(user.companyId);
-  const [fetchUserData, { isLoading: roomsLoading, data: roomsData, error, isSuccess: roomsSuccess,},] = apiSlice.endpoints.getRooms.useLazyQuery(useGetRoomsQuery); // Replace with your actual query
+
+  const { data: units, isLoading: unitsLoading } = useGetUnitsQuery(
+    user.companyId
+  );
+  const {
+    data: technicians,
+    isLoading: technicianLoading,
+  } = useGetTechniciansByCompanyIdQuery(user.companyId);
+  const [
+    fetchUserData,
+    {
+      isLoading: roomsLoading,
+      data: roomsData,
+      error,
+      isSuccess: roomsSuccess,
+    },
+  ] = apiSlice.endpoints.getRooms.useLazyQuery(useGetRoomsQuery); // Replace with your actual query
   const formik = useFormik({
-    initialValues: {...initialValues,assignedTo:initialValues.assignedTo._id},
+    initialValues: {
+      ...initialValues,
+      assignedTo: initialValues.assignedTo._id,
+    },
     validationSchema: validationSchema,
     validateOnMount: true,
-    onSubmit: async(values) => {
-      values.issueLocation = {
-        ...values.issueLocation,
-        unit: unitId,
-        
-      };
-      handleOnFinish({...values,images:imgFiles});
+    onSubmit: async (values) => {
+      if (edit) {
+       
+        let finalValues = handleReturnUpdatedValues(initialValues, values);
+        finalValues.issueLocation = {
+          ...values.issueLocation,
+          unit: unitId,
+        };
+        console.log("final val=", finalValues);
+        if(imgFiles.length){
+          finalValues.images=imgFiles
+        }
+        handleOnFinish({ ...finalValues,_id:values._id });
+      } else {
+        values.issueLocation = {
+          ...values.issueLocation,
+          unit: unitId,
+        };
+        handleOnFinish({ ...values, images: imgFiles });
+      }
     },
   });
 
   useEffect(() => {
-    if (formik.values.issueLocation.unit) {
+    if (formik.values.issueLocation.unit && unitId._id) {
+      
       fetchUserData(unitId._id);
     }
   }, [unitId]);
 
-  
   return (
     <Box sx={{ maxWidth: 800, mx: "auto" }}>
-     
-      {technicianLoading  && <Box sx={{display:"flex",alignItems:"center",justifyContent:"center",marginTop:"4rem"}}><CircularProgress /></Box>}
-      {!technicianLoading  && (
+      {technicianLoading && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: "4rem",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
+      {!technicianLoading && (
         <form onSubmit={formik.handleSubmit}>
-      
           <Grid container spacing={2}>
             <Grid sx={{ mt: 4 }} item xs={12}>
               <Typography variant="h5" gutterBottom>
@@ -103,14 +139,15 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
                 name="createdAt"
                 label="Created Ticket Date"
                 disabled={true}
-                value={dateFormat(initialValues?.createdAt?new Date(initialValues.createdAt):new Date())}
+                value={dateFormat(
+                  initialValues?.createdAt
+                    ? new Date(initialValues.createdAt)
+                    : new Date()
+                )}
                 // onChange={formik.handleChange}
                 // error={formik.touched.status && Boolean(formik.errors.status)}
                 // helperText={formik.touched.status && formik.errors.status}
-              >
-                
-
-              </TextField>
+              ></TextField>
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -131,7 +168,7 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid  item xs={12} sm={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 select
                 fullWidth
@@ -148,16 +185,14 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
                 // helperText={formik.touched.status && formik.errors.status}
               >
                 {!technicianLoading ? (
-                  [{ name: NotAssigned, _id: "NotAssigned" }, ...technicians].map(
-                    (option) => (
-                      <MenuItem
-                        key={option.name}
-                        value={option._id}
-                      >
-                        {option.name}
-                      </MenuItem>
-                    )
-                  )
+                  [
+                    { name: NotAssigned, _id: "NotAssigned" },
+                    ...technicians,
+                  ].map((option) => (
+                    <MenuItem key={option.name} value={option._id}>
+                      {option.name}
+                    </MenuItem>
+                  ))
                 ) : (
                   <MenuItem></MenuItem>
                 )}
@@ -184,29 +219,34 @@ const TicketForm = ({ initialValues, handleOnFinish }) => {
               />
             </Grid>
             <Grid sx={{ mt: 4 }} item xs={12}>
-              <FileUploader styles={{color:"white"}} buttonName="File Upload" icon={<CloudUpload />} files={imgFiles} setFiles={setImgFiles} />
-             
+              <FileUploader
+                styles={{ color: "white" }}
+                buttonName="File Upload"
+                icon={<CloudUpload />}
+                files={imgFiles}
+                setFiles={setImgFiles}
+              />
             </Grid>
             <Grid container spacing={2}>
-        {imgFiles.map((file, index) => (
-          <Grid item key={index}>
-            <Paper
-              variant="outlined"
-              sx={{ display: 'flex', alignItems: 'center', padding: 1 }}
-            >
-              <Typography variant="body2" sx={{ flexGrow: 1 }}>
-                {file.name}
-              </Typography>
-              <IconButton
-                size="small"
-                onClick={() => handleRemoveFile(file)}
-              >
-                <Delete />
-              </IconButton>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
+              {imgFiles.map((file, index) => (
+                <Grid item key={index}>
+                  <Paper
+                    variant="outlined"
+                    sx={{ display: "flex", alignItems: "center", padding: 1 }}
+                  >
+                    <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                      {file.name}
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleRemoveFile(file)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
             <Grid sx={{ mt: 4 }} item xs={12}>
               <Typography variant="h5" gutterBottom>
                 Issue Location :

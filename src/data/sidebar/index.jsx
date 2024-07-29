@@ -115,18 +115,31 @@ export const OrdersData = [
 // }
 
 export const ticketInitialValues = {
-  issue: "",
-  description: "",
+  issue: "askldklas",
+  description: "asdnns",
   images: [],
   status: "OPEN",
   assignedTo: {_id:NotAssignedId,name:NotAssigned},
   issueLocation: {
     locationName: "",
-    unit: "",
-    room: "",
+    unit: "Basement",
+    room: "1042",
     extraDetail: "",
   },
 };
+// export const ticketInitialValues = {
+//   issue: "",
+//   description: "",
+//   images: [],
+//   status: "OPEN",
+//   assignedTo: {_id:NotAssignedId,name:NotAssigned},
+//   issueLocation: {
+//     locationName: "",
+//     unit: "",
+//     room: "",
+//     extraDetail: "",
+//   },
+// };
 // "unit":{"name":"Basement","_id":"66886e4c18ad94b85531ac4f"},
 export const units = ["Basement", "Unit2", "Unit3"]; // Replace with actual unit data
 export const rooms = ["1042", "Room2", "Room3"];

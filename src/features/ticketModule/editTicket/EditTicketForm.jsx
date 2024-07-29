@@ -10,7 +10,7 @@ import {
   Grid,
   Typography,
   Backdrop,
-  CircularProgress 
+  CircularProgress,
 } from "@mui/material";
 
 import DrawerHeader from "../../../components/drawerHeader";
@@ -21,10 +21,9 @@ import { CommentSection } from "../../comment";
 import useUserStore from "../store/UserStore";
 import useStore from "../../../store";
 
-
 const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
   "& .MuiDrawer-paper": {
-    minWidth:"600px",
+    minWidth: "600px",
     boxSizing: "border-box",
     backgroundColor: "white",
     [theme.breakpoints.down("sm")]: {
@@ -39,10 +38,10 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
     error: cloudinaryError,
   } = useUpload();
   const [edit, setEdit] = useState(false);
-  const {openAlert}=useStore(state=>state)
+  const { openAlert } = useStore((state) => state);
   const [editTicket, result] = useEditTicketMutation();
   const { isLoading, isSuccess } = result;
-  const {setEditData,ticket:initialValues}=useUserStore(state=>state)
+  const { setEditData, ticket: initialValues } = useUserStore((state) => state);
   // console.log("initial values=============>", initialValues);
   const {
     issue,
@@ -52,17 +51,25 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
     status,
     issueLocation,
   } = initialValues;
-  const handleOnFinish =async (values) => {
-    const uploadedImages = await uploadToCloudinary(values.images);
-    
-   const editRes=await editTicket({...values,images:uploadedImages});
-   if (editRes?.data) {
-    setEditData(editRes.data);
-    openAlert("Ticket Updated SuccessFully")
-    setEdit(false)
-  }else{
-    openAlert("Error Updating Ticket","error")
-  }
+  const handleOnFinish = async (values) => {
+    try {
+      if (values.images) {
+        const uploadedImages = await uploadToCloudinary(values.images);
+        const imgCollection = [...images, ...uploadedImages];
+        values = { ...values, images: imgCollection };
+      }
+
+      const editRes = await editTicket(values);
+      if (editRes?.data) {
+        setEditData(editRes.data);
+        openAlert("Ticket Updated SuccessFully");
+      }
+    } catch (err) {
+      openAlert("Error Updating Ticket", "error");
+    } finally {
+      setEdit(false);
+    }
+
     //  navigate("/")
   };
 
@@ -114,9 +121,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
               </Grid>
               <Grid xs={12} sm={12} item>
                 <Typography variant="h5">Ticket Assigned :</Typography>
-                <Typography variant="h6">
-                  {assignedTo?.name}
-                </Typography>
+                <Typography variant="h6">{assignedTo?.name}</Typography>
               </Grid>
               <Grid xs={12} sm={12} item>
                 <Typography variant="h5">Status :</Typography>
@@ -164,28 +169,34 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                 </Typography>
               </Grid>
             </Grid>
-            <Box sx={{marginTop:"3rem"}}>
+            <Box sx={{ marginTop: "3rem" }}>
               <Typography variant="h5">Comments:</Typography>
-            <CommentSection comments={initialValues.comments}  />
+              <CommentSection comments={initialValues.comments} />
             </Box>
           </>
         )}
         {edit && (
           <>
-           <Backdrop
-          sx={{ display:"flex",justifyContent:"center",alignItems:"center",color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isLoading || cloudinaryLoading}
-          // onClick={handleClose}
-        >
-          <CircularProgress color="inherit" />
-          </Backdrop>
+            <Backdrop
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: "#fff",
+                zIndex: (theme) => theme.zIndex.drawer + 1,
+              }}
+              open={isLoading || cloudinaryLoading}
+              // onClick={handleClose}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
             <TicketForm
               handleOnFinish={handleOnFinish}
               initialValues={initialValues}
+              edit={true}
             />
           </>
         )}
-    
       </Box>
     </FullWidthDrawer>
   );

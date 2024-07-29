@@ -9,7 +9,6 @@ import {CreateTicket,TicketTable} from "../features/ticketModule";
 import Comments from "../components/comments/Comments.jsx";
 import useStore from "../store/index.js";
 // import WriteComment from "../features/comment/components/WriteComment.jsx";
-import {CommentSection} from "../features/comment"
 const User = () => {
   const [isOpen, setIsOpen] = useState(false);
   const user = useStore((state) => state.user);

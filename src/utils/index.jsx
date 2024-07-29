@@ -65,3 +65,21 @@ export const  dateFormatTime=(date)=>{
 export const getFilterTechnician=(data,name)=>{
   return data.filter(val=>val.name===name)[0]
 }
+
+export const handleReturnUpdatedValues = (initialValues, values) => {
+  const updatedValues = {};
+
+  Object.keys(values).forEach((key) => {
+    if (
+      key !== "comments" &&
+      key !== "images" &&
+      key !== "inventoryUsed"
+    ) {
+      if (initialValues[key] !== values[key]) {
+        updatedValues[key] = values[key];
+      }
+    }
+  });
+
+  return updatedValues;
+};

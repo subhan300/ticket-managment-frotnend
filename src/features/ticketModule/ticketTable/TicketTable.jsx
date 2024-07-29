@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { columns, data,} from "./columns";
 import TicketDrawer from "../editTicket/EditTicketForm";
-import { useTheme } from "@mui/material";
+import { CircularProgress, useTheme } from "@mui/material";
 import useStore from "../../../store";
 import { useGetTicketsByUserIdQuery } from "../../../apis/apiSlice";
 import useCommentStore from "../../comment/store/CommentStore";
@@ -32,7 +32,6 @@ export default function TicketTable() {
   const {data:ticketsData,setData, setTicket}=useUserStore(state=>state)
   const { isLoading, data ,isSuccess} = useGetTicketsByUserIdQuery(user._id);
   const {setTicketId,setCommentList}=useCommentStore(state=>state)
-  // console.log("data",data)
   const handleDrawer = (value) => {
    if(value){
     setTicketId(value._id)
@@ -50,6 +49,7 @@ export default function TicketTable() {
          setData(data)
      }
   },[isSuccess])
+  console.log("islaoding",isLoading)
   return (
     <>
       {isOpen && (
@@ -59,6 +59,7 @@ export default function TicketTable() {
         />
       )}
       <Box sx={{ width: "100%",overflowX: "auto",  }}>
+        
         <DataGrid
           sx={{
             overflowX: "auto", // Enable horizontal scrolling
@@ -67,6 +68,15 @@ export default function TicketTable() {
             minWidth:"500px",
             "& .MuiDataGrid-filler": { backgroundColor: "var(--table-header)" },
           }}
+          
+          
+          slotProps={{
+            loadingOverlay: {
+              variant: 'linear-progress',
+              // noRowsVariant: 'linear-progress',
+            },
+          }}
+        
           loading={isLoading}
           rows={ticketsData}
           getRowId={(row) => row?._id}

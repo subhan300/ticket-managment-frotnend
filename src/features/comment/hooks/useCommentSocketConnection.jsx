@@ -11,6 +11,11 @@ const UseCommentSocketConnection = () => {
         socket.on('commentAdded', (updatedComments) => {
             setCommentList(updatedComments);
         });
+        
+        socket.on('initialComments', (initialComments) => {
+            console.log("inital",initialComments)
+            setCommentList(initialComments);
+        });
 
         socket.on('commentEdited', (updatedComments) => {
             setCommentList(updatedComments);
@@ -24,6 +29,7 @@ const UseCommentSocketConnection = () => {
         return () => {
             socket.off('commentAdded');
             socket.off('commentEdited');
+            socket.off('initialComments');
             socket.off('commentDeleted');
             socket.emit('leaveTicketRoom', ticketId);
         };

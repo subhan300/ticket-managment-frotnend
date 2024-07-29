@@ -10,6 +10,7 @@ import useCustomNavigate from "../../../hooks/useCustomNavigate";
 import Alert from "../../../components/GlobalComponents/alert/Alert";
 import useUpload from "../../../hooks/useUpload";
 import { ticketInitialValues } from "../../../data";
+import useUserStore from "../store/UserStore";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -17,6 +18,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 export default function CreateTicket({ isOpen, handleTicketDialog }) {
   const navigate = useCustomNavigate();
+  const {setData,data:ticketsData}=useUserStore(state=>state)
   const [createTicket, result] = useCreateTicketMutation();
   const {
     uploadToCloudinary,
@@ -28,12 +30,22 @@ export default function CreateTicket({ isOpen, handleTicketDialog }) {
   const {user, openAlert} = useStore((state) => state);
   const handleOnFinish = async (values) => {
     const uploadedImages = await uploadToCloudinary(values.images);
-    createTicket({ ...values, images: uploadedImages });
+    const  {error,data}=await createTicket({ ...values ,images: uploadedImages });
+    console.log("data====",data)
+    debugger
+    if(data){
+      openAlert("Ticket is Successfully Created")
+      handleTicketDialog(false);
+      
+      setData([data,...ticketsData])
+    }else{
+      console.log(error.data.error)
+      openAlert("Failed to create Ticket",'error')
+    }
   };
   useEffect(() => {
     if (isSuccess) {
-      openAlert("Ticket is Successfully Created")
-      handleTicketDialog(false);
+     
     }
   }, [isSuccess]);
 
