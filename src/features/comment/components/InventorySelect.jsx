@@ -1,39 +1,41 @@
 import React from 'react';
-import { Select, MenuItem, Checkbox, ListItemText, IconButton, TextField } from '@mui/material';
+import { Select, MenuItem, Checkbox, ListItemText, IconButton, TextField, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 const InventorySelect = ({ formikInventory, inventoryItems,quantity,setQuantity }) => {
-  const handleQuantityChange = (id, quantityPayload,selectedProduct) => {
-    // const updatedInventory = formikInventory.values.inventoryUsed.map(item => {
-        // debugger
-    //  if(formikInventory.values.inventoryUsed.some(item=>item===id)){
-    // debugger
-        const qtyIndex=quantity.findIndex(val=>val._id===id)
-        setQuantity((prev) => {
-          if (qtyIndex > -1) {
-            const newUpdateQty = { ...quantity[qtyIndex], quantityUsed: quantity[qtyIndex].quantityUsed + quantityPayload };
-            return [...prev.slice(0, qtyIndex), newUpdateQty, ...prev.slice(qtyIndex + 1)];
-          } else {
-            return [...prev, { _id: id, quantityUsed: quantityPayload }];
-          }
-        });
-        formikInventory.setFieldValue(`quantityUsed.${id}`,quantityPayload);
 
-  };
-
+  const filterInventory=(id)=>{
+      if(formikInventory.values.inventoryUsed.some(val=>val.inventoryId===id)){
+        const getItems=formikInventory.values.inventoryUsed.filter(val=>val.inventoryId !== id)
+        formikInventory.setFieldValue("inventoryUsed",getItems)
+      }else{
+        formikInventory.setFieldValue("inventoryUsed",[...formikInventory.values.inventoryUsed,{inventoryId:id,quantityUsed:1}])
+      }
+   
+  }
+const handleQuantityChange = (id, val) => {
+  const getItemIndex = formikInventory.values.inventoryUsed.findIndex((val) => val.inventoryId === id);
+  if (getItemIndex !== -1) {
+    const updatedItems = [...formikInventory.values.inventoryUsed];
+    updatedItems[getItemIndex] = { ...updatedItems[getItemIndex], quantityUsed: updatedItems[getItemIndex].quantityUsed + (val) };
+    formikInventory.setFieldValue("inventoryUsed", updatedItems);
+  }
+};
   return (
+    <>
     <Select
       multiple
       value={formikInventory.values.inventoryUsed.map(item => item)}
-      id="inventoryUsed"
-      name="inventoryUsed"
-      onChange={formikInventory.handleChange}
+      // id="inventoryUsed"
+      // name="inventoryUsed"
+      // onChange={formikInventory.handleChange}
       renderValue={(selected) => {
+        console.log("selected",selected)
         return selected
-          .map((id) => {
+          .map((val) => {
             const selectedProduct = inventoryItems.find(
-              (product) => product._id === id
+              (product) => product._id === val.inventoryId
             );
             return selectedProduct?.productName;
           })
@@ -41,28 +43,30 @@ const InventorySelect = ({ formikInventory, inventoryItems,quantity,setQuantity 
       }}
     >
       {inventoryItems.map(({ productName, _id }) => {
-        const selectedProduct = formikInventory.values.inventoryUsed.find(item => item === _id);
-        const quantityExtract=quantity.filter(val=>val._id===_id)[0]
+        const selectedProduct = formikInventory.values.inventoryUsed.find(item => item.inventoryId=== _id);
         return (
-          <MenuItem key={_id} value={_id} sx={{zIndex:"20"}}>
+          <MenuItem onClick={()=>{filterInventory(_id)}} 
+          key={_id} value={{quantityUsed:1,inventoryId:_id}} sx={{zIndex:"20"}}>
             <Checkbox
-              
-              checked={formikInventory.values.inventoryUsed.some(item => item === _id)}
+              onChange={()=>{filterInventory(_id)}}
+              checked={formikInventory.values.inventoryUsed.some(item => item.inventoryId === _id)}
             />
-            <ListItemText primary={productName} />
+            <ListItemText  primary={productName} />
             {selectedProduct && (
               <div style={{ display: 'flex', alignItems: 'center',zIndex:"40" }}>
                 <IconButton
                   size="small"
                   onClick={(e) =>{
                     e.stopPropagation();
-                    handleQuantityChange(_id, -1)}}
+                      handleQuantityChange(_id, -1)
+                   
+                  }}
                   disabled={selectedProduct.quantityUsed <= 1}
                 >
                   <RemoveIcon fontSize="small" />
                 </IconButton>
                 <TextField
-                  value={quantityExtract?.quantityUsed??1}
+                  value={selectedProduct.quantityUsed}
                   inputProps={{
                     style: { width: 40, textAlign: 'center' }
                   }}
@@ -70,7 +74,8 @@ const InventorySelect = ({ formikInventory, inventoryItems,quantity,setQuantity 
                 />
                 <IconButton size="small" onClick={(e) =>{
                      e.stopPropagation();
-                    handleQuantityChange(_id, 1,)}}>
+                    handleQuantityChange(_id, 1,)
+                    }}>
                   <AddIcon fontSize="small" />
                 </IconButton>
               </div>
@@ -79,6 +84,7 @@ const InventorySelect = ({ formikInventory, inventoryItems,quantity,setQuantity 
         );
       })}
     </Select>
+    </>
   );
 };
 

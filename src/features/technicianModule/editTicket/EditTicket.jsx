@@ -5,6 +5,9 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { styled } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
+// import { Select, ListItemText, IconButton, TextField } from '@mui/material';
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 import {
   Box,
@@ -37,6 +40,7 @@ import { statusCollection } from "../../../data";
 import useStore from "../../../store";
 import { flexAlignStart } from "../../../styles-components/global-styles/styles";
 import InventorySelect from "../../comment/components/InventorySelect";
+import { CheckBox } from "@mui/icons-material";
 
 const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
   // border: "1px solid red",
@@ -80,18 +84,11 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
     _id,
   } = ticket;
 
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     setEdit(false);
-  //   }
-  // }, [isSuccess]);
-
   const formikAssignedTo = useFormik({
     initialValues: { ...ticket, assignedTo: assignedTo._id },
     // validationSchema: validationSchema,
     // validateOnMount: true,
     onSubmit: async (values) => {
-      // const technician=getFilterTechnician(technicians,values.assignedTo)
       const editRes = await editTicket({
         assignedTo: values.assignedTo,
         _id: values._id,
@@ -112,37 +109,20 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
       setEditData(values);
     },
   });
-  const inventoryUsedIds = inventoryUsed.map((val) => val._id);
   const [quantityUsedCollection, setQuantityUsedCollection] = useState(
     inventoryUsed
   );
-  console.log("inventory ids", inventoryUsedIds);
+  console.log("inventory ids", inventoryUsed);
   const formikInventory = useFormik({
     initialValues: {
       ...ticket,
       assignedTo: assignedTo._id,
-      inventoryUsed: inventoryUsedIds,
+      inventoryUsed: [],
     },
     onSubmit: async (values) => {
-      // debugger
-      const filterIds = values.inventoryUsed;
-      // const inventoryUsedCollection=quantityUsedCollection.filter(val=>filterIds.includes(val._id)).map(val=>({inventoryId:val._id,quantityUsed:val.quantityUsed}))
-      const mergeCollection = filterIds.map((id) => {
-        const getIndex = quantityUsedCollection.findIndex(
-          (qty) => qty._id === id
-        );
-        if (getIndex > -1) {
-          return {
-            inventoryId: id,
-            quantityUsed: quantityUsedCollection[getIndex].quantityUsed,
-          };
-        } else {
-          return { inventoryId: id, quantityUsed: 1 };
-        }
-      });
-      // console.log("values",values,inventoryUsedCollection)
+      const {inventoryUsed}=values
       const editRes = await editTicket({
-        inventoryUsed: mergeCollection,
+        inventoryUsed,
         _id: values._id,
       });
       if (editRes?.data) {
@@ -184,8 +164,9 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
       openAlert("Ticket Updated Successfully");
     }
   }, [isSuccess]);
-  // console.log("tikcet===", ticket);
 
+
+  console.log("formik inventory",formikInventory.values.inventoryUsed)
   return (
     <FullWidthDrawer
       anchor="right"
@@ -301,6 +282,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                   )}
                   {edit.inventory && (
                     <>
+                   {isLoading &&   <CircularProgress size={22} />}
                       <IconButton
                         edge="start"
                         color="inherit"
@@ -329,6 +311,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                     formikInventory={formikInventory}
                     inventoryItems={inventoryItems}
                   />
+               
                 ) : inventoryUsed.length ? (
                   inventoryUsed.map(
                     (
@@ -417,6 +400,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                     )}
                     {edit.externalInventory && (
                       <>
+                        {isLoading &&   <CircularProgress size={22} />}
                         <IconButton
                           edge="start"
                           color="inherit"
@@ -486,6 +470,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                     )}
                     {edit.status && (
                       <>
+                        {isLoading &&   <CircularProgress size={22} />}
                         <IconButton
                           edge="start"
                           color="inherit"

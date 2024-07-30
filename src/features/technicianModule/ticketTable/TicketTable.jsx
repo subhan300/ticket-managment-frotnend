@@ -9,6 +9,7 @@ import { useEditTicketMutation, useGetFilteredCompanyTicketsQuery, useGetTechnic
 import useCommentStore from "../../comment/store/CommentStore";
 import {useTechnicianStore} from "../store";
 import { useColumns } from "./useColumns";
+import { ticketsDataDummy } from "../../../data";
 
 const initialValue = [
   {
@@ -103,6 +104,7 @@ export default function TicketTable() {
     }
  },[isSuccess])
  useEffect(()=>{
+  handleDrawer(ticketsDataDummy[0])
   if(technicianSuccess){
     setTechnician(techniciansData)
   }
