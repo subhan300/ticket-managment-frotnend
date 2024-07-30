@@ -104,7 +104,7 @@ export default function TicketTable() {
     }
  },[isSuccess])
  useEffect(()=>{
-  handleDrawer(ticketsDataDummy[0])
+  // handleDrawer(ticketsDataDummy[0])
   if(technicianSuccess){
     setTechnician(techniciansData)
   }

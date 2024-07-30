@@ -107,10 +107,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
       setEditData(values);
     },
   });
-  const [quantityUsedCollection, setQuantityUsedCollection] = useState(
-    inventoryUsed
-  );
-  console.log("inventory ids", inventoryUsed);
+
   const formikInventory = useFormik({
     initialValues: {
       ...ticket,
@@ -304,8 +301,6 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                 </Grid>{" "}
                 {edit.inventory ? (
                   <InventorySelect
-                    quantity={quantityUsedCollection}
-                    setQuantity={setQuantityUsedCollection}
                     formikInventory={formikInventory}
                     inventoryItems={inventoryItems}
                   />

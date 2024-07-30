@@ -3,7 +3,7 @@ import { Select, MenuItem, Checkbox, ListItemText, IconButton, TextField, Button
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
-const InventorySelect = ({ formikInventory, inventoryItems,quantity,setQuantity }) => {
+const InventorySelect = ({ formikInventory, inventoryItems}) => {
 
   const filterInventory=(id)=>{
       if(formikInventory.values.inventoryUsed.some(val=>val.inventoryId===id)){
