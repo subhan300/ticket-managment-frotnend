@@ -22,6 +22,7 @@ const handleQuantityChange = (id, val) => {
     formikInventory.setFieldValue("inventoryUsed", updatedItems);
   }
 };
+console.log("formikInventory.values.inventoryUsed",formikInventory.values.inventoryUsed)
   return (
     <>
     <Select

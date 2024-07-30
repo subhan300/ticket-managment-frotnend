@@ -112,7 +112,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
     initialValues: {
       ...ticket,
       assignedTo: assignedTo._id,
-      inventoryUsed: [],
+      inventoryUsed:inventoryUsed.map(val=>({inventoryId:val._id,quantityUsed:val.quantityUsed})),
     },
     onSubmit: async (values) => {
       const {inventoryUsed}=values
