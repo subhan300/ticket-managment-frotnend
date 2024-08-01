@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { TechnicianSideBar, adminSideBar, managerSideBar, userSideBar } from "../data/sidebar";
-import { ADMIN, HOUSEKEEPING, MANAGER, TECHNICIAN, USER } from "../helper/constants";
+import { ADMIN, HOUSEKEEPING, MANAGER, NotAssigned, TECHNICIAN, USER } from "../helper/constants";
 import Admin from "../pages/Admin";
 import LoginPage from "../pages/Login";
 import Manager from "../pages/Manager";
@@ -83,3 +83,9 @@ export const handleReturnUpdatedValues = (initialValues, values) => {
 
   return updatedValues;
 };
+
+
+export const assignedToAddInitialObject=(data)=>{
+   return [{ name: NotAssigned, _id: "NotAssigned" },
+    ...data]
+}

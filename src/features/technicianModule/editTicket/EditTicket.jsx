@@ -6,7 +6,6 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { styled } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 
-
 import {
   Box,
   Button,
@@ -39,6 +38,10 @@ import useStore from "../../../store";
 import { flexAlignStart } from "../../../styles-components/global-styles/styles";
 import InventorySelect from "../../comment/components/InventorySelect";
 import { CheckBox } from "@mui/icons-material";
+import { assignedToAddInitialObject } from "../../../utils";
+import { COMPLETED, NotAssignedId, OPEN, PROGRESS } from "../../../helper";
+import useCommentStore from "../../comment/store/CommentStore";
+import UseComment from "../../comment/hooks/useComment";
 
 const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
   // border: "1px solid red",
@@ -52,7 +55,7 @@ const FullWidthDrawer = styled(Drawer)(({ theme }) => ({
     },
   },
 }));
-const EditTicketForm = ({ isOpen, handleDrawer }) => {
+const EditTicket = ({ isOpen, handleDrawer }) => {
   const { technicians, setEditData, data, ticket } = useTechnicianStore(
     (state) => state
   );
@@ -60,7 +63,8 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
     data: inventoryItems = [],
     isLoading: inventoryLoading,
   } = useGetInventoryItemsQuery();
-  const { openAlert } = useStore((state) => state);
+  const { openAlert, user } = useStore((state) => state);
+  const { handleAddCommentNote } = UseComment();
   const [edit, setEdit] = useState({
     assignedTo: false,
     status: false,
@@ -90,6 +94,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
       const editRes = await editTicket({
         assignedTo: values.assignedTo,
         _id: values._id,
+        status: values.assignedTo===NotAssignedId?OPEN:PROGRESS,
       });
       if (editRes?.data) {
         handleEdit("assignedTo", false);
@@ -102,7 +107,12 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
     // validationSchema: validationSchema,
     // validateOnMount: true,
     onSubmit: async (values) => {
-      editTicket({ status: values.status, _id: values._id });
+      const {status,assignedTo}=values;
+       if((status===COMPLETED || status===PROGRESS) && assignedTo === NotAssignedId){
+         return openAlert("Can't set status for unAssigned Ticket","error")
+            
+       }
+      await editTicket({ status: values.status, _id: values._id });
       handleEdit("status", false);
       setEditData(values);
     },
@@ -112,14 +122,37 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
     initialValues: {
       ...ticket,
       assignedTo: assignedTo._id,
-      inventoryUsed:inventoryUsed.map(val=>({inventoryId:val._id,quantityUsed:val.quantityUsed})),
+      inventoryUsed: inventoryUsed.map((val) => ({
+        inventoryId: val._id,
+        quantityUsed: val.quantityUsed,
+      })),
     },
     onSubmit: async (values) => {
-      const {inventoryUsed}=values
+      const { inventoryUsed } = values;
       const editRes = await editTicket({
         inventoryUsed,
         _id: values._id,
       });
+      const inventorySelected = [];
+      const inventoryMapping = inventoryItems.map((val) => {
+        const getIndex = inventoryUsed.findIndex(
+          (item) => item.inventoryId === val._id
+        );
+        if (getIndex > 0) {
+          inventorySelected.push({
+            ...val,
+            quantityUsed: inventoryUsed[getIndex].quantityUsed,
+          });
+        }
+      });
+      const formattedNotes = inventorySelected
+        .map(
+          ({ productName, quantityUsed }) => `
+      Inventory Purchase ${productName}: Bought phone with a quantity of ${quantityUsed}
+    `
+        )
+        .join("\n");
+      handleAddCommentNote(formattedNotes);
       if (editRes?.data) {
         handleEdit("inventory", false);
         setEditData(editRes.data);
@@ -149,6 +182,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
   const handleEdit = (name, val) => {
     setEdit((prev) => ({ ...prev, [name]: val }));
   };
+
   const handleCancel = (name, val, form) => {
     form.setValues(ticket);
     handleEdit(name, val);
@@ -160,8 +194,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
     }
   }, [isSuccess]);
 
-
-  console.log("formik inventory",formikInventory.values.inventoryUsed)
+  // console.log("formik inventory",formikInventory.values.inventoryUsed)
   return (
     <FullWidthDrawer
       anchor="right"
@@ -209,6 +242,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                   )}
                   {edit.assignedTo && (
                     <>
+                      {isLoading && <CircularProgress size={22} />}
                       <IconButton
                         edge="start"
                         color="inherit"
@@ -244,7 +278,9 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                       // error={formik.touched.status && Boolean(formik.errors.status)}
                       // helperText={formik.touched.status && formik.errors.status}
                     >
-                      {technicians.map((option) => (
+                      {assignedToAddInitialObject([
+                        { _id: user._id, name: user.name },
+                      ]).map((option) => (
                         <MenuItem key={option._id} value={option._id}>
                           {option.name}
                         </MenuItem>
@@ -257,6 +293,86 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                     {assignedTo.name ? assignedTo.name : "Not Assigned"}
                   </Typography>
                 )}
+              </form>
+            </Grid>
+            <Grid xs={12} sm={12} item>
+              <form onSubmit={formikStatus.handleSubmit}>
+                <Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      gap: "1rem",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="h5">Status</Typography>
+                    {!edit.status && (
+                      <IconButton
+                        edge="start"
+                        color="inherit"
+                        onClick={() => {
+                          handleEdit("status", true);
+                        }}
+                        aria-label="close"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    )}
+                    {edit.status && (
+                      <>
+                        {isLoading && <CircularProgress size={22} />}
+                        <IconButton
+                          edge="start"
+                          color="inherit"
+                          aria-label="close"
+                          type="submit"
+                        >
+                          <SaveIcon />
+                        </IconButton>
+                        <IconButton
+                          edge="start"
+                          color="inherit"
+                          onClick={() => {
+                            handleCancel("status", false, formikStatus);
+                          }}
+                          aria-label="close"
+                        >
+                          <CancelIcon />
+                        </IconButton>
+                      </>
+                    )}
+                  </Box>
+                </Box>
+                {edit.status && (
+                  <Box>
+                    <TextField
+                      select
+                      fullWidth
+                      id="status"
+                      name="status"
+                      label="Status"
+                      value={formikStatus.values.status}
+                      onChange={formikStatus.handleChange}
+
+                      // error={formik.touched.status && Boolean(formik.errors.status)}
+                      // helperText={formik.touched.status && formik.errors.status}
+                    >
+                      {statusCollection.map((option) => (
+                        <MenuItem
+                          onChange={() => {
+                            // handleChange(option);
+                          }}
+                          key={option}
+                          value={option}
+                        >
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Box>
+                )}
+                {!edit.status && <Typography variant="h6">{status}</Typography>}
               </form>
             </Grid>
             <Grid xs={12} item>
@@ -277,7 +393,7 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                   )}
                   {edit.inventory && (
                     <>
-                   {isLoading &&   <CircularProgress size={22} />}
+                      {isLoading && <CircularProgress size={22} />}
                       <IconButton
                         edge="start"
                         color="inherit"
@@ -304,7 +420,6 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
                     formikInventory={formikInventory}
                     inventoryItems={inventoryItems}
                   />
-               
                 ) : inventoryUsed.length ? (
                   inventoryUsed.map(
                     (
@@ -376,147 +491,81 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
             </Grid>
             <Grid xs={12} item>
               <form onSubmit={formikExternalInventory.handleSubmit}>
-                <Box sx={{ ...flexAlignStart }}>
-                  <Typography variant="h5">External Inventory :</Typography>
-                  <Box>
-                    {!edit.externalInventory && (
-                      <IconButton
-                        edge="start"
-                        color="inherit"
-                        onClick={() => {
-                          handleEdit("externalInventory", true);
-                        }}
-                        aria-label="close"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    )}
-                    {edit.externalInventory && (
-                      <>
-                        {isLoading &&   <CircularProgress size={22} />}
-                        <IconButton
-                          edge="start"
-                          color="inherit"
-                          type="submit"
-                          aria-label="close"
-                        >
-                          <SaveIcon />
-                        </IconButton>
+                <Box>
+                  <Box sx={{ ...flexAlignStart }}>
+                    <Typography variant="h5">External Inventory :</Typography>
+                    <Box>
+                      {!edit.externalInventory && (
                         <IconButton
                           edge="start"
                           color="inherit"
                           onClick={() => {
-                            handleCancel(
-                              "externalInventory",
-                              false,
-                              formikExternalInventory
-                            );
+                            handleEdit("externalInventory", true);
                           }}
                           aria-label="close"
                         >
-                          <CancelIcon />
+                          <EditIcon />
                         </IconButton>
-                      </>
-                    )}
+                      )}
+                      {edit.externalInventory && (
+                        <Box sx={{display:"flex",alignItems:"center",}}>
+                          {isLoading && <CircularProgress size={22} />}
+                          <IconButton
+                            edge="start"
+                            color="inherit"
+                            type="submit"
+                            aria-label="close"
+                            sx={{marginLeft:"2px"}}
+                          >
+                            <SaveIcon />
+                          </IconButton>
+                          <IconButton
+                            edge="start"
+                            color="inherit"
+                            onClick={() => {
+                              handleCancel(
+                                "externalInventory",
+                                false,
+                                formikExternalInventory
+                              );
+                            }}
+                            aria-label="close"
+                          >
+                            <CancelIcon />
+                          </IconButton>
+                        </Box>
+                      )}
+                    </Box>
                   </Box>
-                </Box>
-                <Box>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        disabled={!edit.externalInventory}
+                  {!edit.externalInventory && (
+                    <Box>
+                      <Typography variant="h5">{externalInventory}</Typography>{" "}
+                    </Box>
+                  )}
+                  {edit.externalInventory && (
+                    <Box>
+                      <TextField
+                        fullWidth
+                        id="externalInventory"
                         name="externalInventory"
-                        checked={
-                          formikExternalInventory.values.externalInventory
-                        }
+                        label="externalInventory"
+                        value={formikExternalInventory.values.externalInventory}
                         onChange={formikExternalInventory.handleChange}
+                        error={
+                          formikExternalInventory.touched.issue &&
+                          Boolean(formikExternalInventory.errors.issue)
+                        }
+                        helperText={
+                          formikExternalInventory.touched.issue &&
+                          formikExternalInventory.errors.issue
+                        }
                       />
-                    }
-                    label="Buy Inventory From Outside"
-                  />
+                    </Box>
+                  )}
                 </Box>
               </form>
             </Grid>
-            <Grid xs={12} sm={12} item>
-              <form onSubmit={formikStatus.handleSubmit}>
-                <Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      gap: "1rem",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Typography variant="h5">Status</Typography>
-                    {!edit.status && (
-                      <IconButton
-                        edge="start"
-                        color="inherit"
-                        onClick={() => {
-                          handleEdit("status", true);
-                        }}
-                        aria-label="close"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    )}
-                    {edit.status && (
-                      <>
-                        {isLoading &&   <CircularProgress size={22} />}
-                        <IconButton
-                          edge="start"
-                          color="inherit"
-                          aria-label="close"
-                          type="submit"
-                        >
-                          <SaveIcon />
-                        </IconButton>
-                        <IconButton
-                          edge="start"
-                          color="inherit"
-                          onClick={() => {
-                            handleCancel("status", false, formikStatus);
-                          }}
-                          aria-label="close"
-                        >
-                          <CancelIcon />
-                        </IconButton>
-                      </>
-                    )}
-                  </Box>
-                </Box>
-                {edit.status && (
-                  <Box>
-                    <TextField
-                      select
-                      fullWidth
-                      id="status"
-                      name="status"
-                      label="Status"
-                      value={formikStatus.values.status}
-                      onChange={formikStatus.handleChange}
 
-                      // error={formik.touched.status && Boolean(formik.errors.status)}
-                      // helperText={formik.touched.status && formik.errors.status}
-                    >
-                      {statusCollection.map((option) => (
-                        <MenuItem
-                          onChange={() => {
-                            handleChange(option);
-                          }}
-                          key={option}
-                          value={option}
-                        >
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </Box>
-                )}
-                {!edit.status && <Typography variant="h6">{status}</Typography>}
-              </form>
-            </Grid>
             <Grid xs={12} sm={12} item>
               <Typography variant="h5">Attachments</Typography>
             </Grid>
@@ -567,4 +616,4 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
   );
 };
 
-export default EditTicketForm;
+export default EditTicket;

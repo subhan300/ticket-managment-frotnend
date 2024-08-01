@@ -17,7 +17,7 @@ const Wrapper = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
    zIndex:"220px",
-  width: "100%",
+   minWidth:"400px",
   "& .MuiInputBase-root": {
     //   borderColor: theme.palette.grey[300],
   },
@@ -48,7 +48,7 @@ const WriteComment = ({handleSubmit,initialText,loading, disableImageUpload}) =>
 	const [text,setText]=useState(initialText)
 	
   return (
-    <Wrapper id="write_comment">
+    <Wrapper id="write_comment" >
       <TextField
         fullWidth
         variant="outlined"

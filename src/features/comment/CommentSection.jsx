@@ -12,6 +12,7 @@ import {
 } from "../../apis/apiSlice";
 import UseCommentSocketConnection from "./hooks/useCommentSocketConnection";
 import useStore from "../../store";
+import UseComment from "./hooks/useComment";
 
 const CommentWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -50,46 +51,16 @@ const CommentWrapper = styled(Box)(({ theme }) => ({
 }));
 const CommentSection = () => {
    UseCommentSocketConnection()
-  const [addComment, result] = useAddCommentMutation();
-  const user=useStore(state=>state.user)
-  const userId=user._id
+
   const {
-    setFiles,
     files,
-    setAddLoading,
     addLoading,
     handleRemoveFile,
     commentList,
-    setCommentList,
-    ticketId
+    
   } = useCommentStore((state) => state);
-
-  const { uploadToCloudinary } = useUpload();
-  const handleAddComment = async (text, setText) => {
-    try {
-      setAddLoading(true);
-      let imagesCollection = [];
-      if (files.length) {
-        imagesCollection = await uploadToCloudinary(files);
-      }
-      const response = await addComment({
-        ticketId,
-        userId,
-        text,
-        images: imagesCollection,
-        createdAt:new Date()
-
-      });
-      setCommentList(response.data);
-      setText("");
-      setFiles([]);
-    } catch (error) {
-      console.error("Error adding comment:", error);
-    } finally {
-      setAddLoading(false);
-    }
-  };
-
+ const {handleAddComment}=UseComment()
+ 
  
   return (
     <CommentWrapper>
@@ -112,13 +83,15 @@ const CommentSection = () => {
           return (
             <CommentViewBox
               key={val._id}
-              comment={{
-                createdAt: val.createdAt,
-                text: val.text,
-                _id: val._id,
-                images: val.images,
-                userId:val.userId
-              }}
+              comment={{...val,userId:val?.userId}}
+              // comment={{
+              //   createdAt: val.createdAt,
+              //   text: val.text,
+              //   _id: val._id,
+              //   images: val.images,
+              //   userId:val.userId,
+                
+              // }}
             />
           );
         })}

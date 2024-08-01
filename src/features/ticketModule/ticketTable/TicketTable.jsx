@@ -8,7 +8,7 @@ import useStore from "../../../store";
 import { useGetTicketsByUserIdQuery } from "../../../apis/apiSlice";
 import useCommentStore from "../../comment/store/CommentStore";
 import useUserStore from "../store/UserStore";
-
+import { useDemoData } from '@mui/x-data-grid-generator';
 const initialValue = {
   userId: "12345", // Replace with actual user ID
   issue: "Network connectivity issue in conference room A",
@@ -49,6 +49,13 @@ export default function TicketTable() {
          setData(data)
      }
   },[isSuccess])
+  const { data:dataDemo } = useDemoData({
+    dataSet: 'Commodity',
+    rowLength: 30,
+    maxColumns: 6,
+  });
+
+
   console.log("islaoding",isLoading)
   return (
     <>
@@ -59,31 +66,16 @@ export default function TicketTable() {
         />
       )}
       <Box sx={{ width: "100%",overflowX: "auto",  }}>
-        
-        <DataGrid
-          sx={{
-            overflowX: "auto", // Enable horizontal scrolling
-            width: "100%",
-            minHeight:"200px",
-            minWidth:"500px",
-            "& .MuiDataGrid-filler": { backgroundColor: "var(--table-header)" },
-          }}
-          
-          
-          slotProps={{
-            loadingOverlay: {
-              variant: 'linear-progress',
-              // noRowsVariant: 'linear-progress',
-            },
-          }}
-        
-          loading={isLoading}
-          rows={ticketsData}
-          getRowId={(row) => row?._id}
-        
-
-          columns={columns(handleDrawer)}
-          initialState={{
+      {/* <DataGrid
+        {...dataDemo}
+        loading={isLoading}
+        slotProps={{
+          loadingOverlay: {
+            variant: 'linear-progress',
+            noRowsVariant: 'linear-progress',
+          },
+        }}
+            initialState={{
             pagination: {
               paginationModel: {
                 pageSize: 5,
@@ -93,7 +85,38 @@ export default function TicketTable() {
           disableColumnResize={true}
           pageSizeOptions={[5]}
           disableColumnMenu={true}
-          // checkboxSelection
+          disableRowSelectionOnClick
+          disableColumnSelector
+      /> */}
+        <DataGrid
+          sx={{
+            overflowX: "auto", // Enable horizontal scrolling
+            width: "100%",
+            minHeight:"150px",
+            minWidth:"500px",
+            "& .MuiDataGrid-filler": { backgroundColor: "var(--table-header)" },
+          }}
+          loading={isLoading}
+          rows={ticketsData}
+          getRowId={(row) => row?._id}
+          slotProps={{
+            loadingOverlay: {
+              variant: 'linear-progress',
+              noRowsVariant: 'skeleton',
+            },
+          }}
+        
+          columns={columns(handleDrawer)}
+          // initialState={{
+          //   pagination: {
+          //     paginationModel: {
+          //       pageSize: 5,
+          //     },
+          //   },
+          // }}
+          disableColumnResize={true}
+          pageSizeOptions={[5]}
+          disableColumnMenu={true}
           disableRowSelectionOnClick
           disableColumnSelector
         />

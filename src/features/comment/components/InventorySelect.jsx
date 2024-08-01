@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, MenuItem, Checkbox, ListItemText, IconButton, TextField, Button } from '@mui/material';
+import { Select, MenuItem, Checkbox, ListItemText, IconButton, TextField, Button, Autocomplete } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
@@ -22,7 +22,7 @@ const handleQuantityChange = (id, val) => {
     formikInventory.setFieldValue("inventoryUsed", updatedItems);
   }
 };
-console.log("formikInventory.values.inventoryUsed",formikInventory.values.inventoryUsed)
+// console.log("formikInventory.values.inventoryUsed",formikInventory.values.inventoryUsed,"inventory items",inventoryItems)
   return (
     <>
     <Select
@@ -46,7 +46,7 @@ console.log("formikInventory.values.inventoryUsed",formikInventory.values.invent
       {inventoryItems.map(({ productName, _id }) => {
         const selectedProduct = formikInventory.values.inventoryUsed.find(item => item.inventoryId=== _id);
         return (
-          <MenuItem onClick={()=>{filterInventory(_id)}} 
+          <MenuItem disableAutoFocusItem disablePortal  onClick={()=>{filterInventory(_id)}} 
           key={_id} value={{quantityUsed:1,inventoryId:_id}} sx={{zIndex:"20"}}>
             <Checkbox
               onChange={()=>{filterInventory(_id)}}
@@ -85,6 +85,9 @@ console.log("formikInventory.values.inventoryUsed",formikInventory.values.invent
         );
       })}
     </Select>
+    
+
+
     </>
   );
 };

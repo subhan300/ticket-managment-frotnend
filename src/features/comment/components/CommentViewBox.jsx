@@ -17,6 +17,7 @@ import useCommentStore from "../store/CommentStore";
 import { useDeleteCommentMutation } from "../../../apis/apiSlice";
 import { ActionPopup } from "../../../components";
 import useStore from "../../../store";
+import UseComment from "../hooks/useComment";
 const CommentContainer = styled(Box, {
   shouldForwardProp: (props) => props != "open" && props !== 'showEditOptions',
 })(({ theme, open,showEditOptions }) => ({
@@ -90,33 +91,21 @@ const CommentContainer = styled(Box, {
 }));
 
 const CommentViewBox = ({ comment}) => {
-  const [deleteComment, result] = useDeleteCommentMutation();
-  const [popOverOpen, setPopOverOpen] = useState(null);
+  // const [deleteComment, result] = useDeleteCommentMutation();
+  
   const user=useStore(state=>state.user)
   const {
     setComment,
     comment: stateComment,
-    ticketId,
-    setDeleteComment,
     deleteLoading,
-    setDeleteLoading,
   } = useCommentStore((state) => state);
+  const {handleDelete,popOverOpen,setPopOverOpen}=UseComment()
   const handleEdit = () => {
     setComment(comment);
   };
-  const handleDelete = async () => {
-    try {
-      setDeleteLoading(true);
-      setDeleteComment(comment);
-      await deleteComment({ ticketId, commentId: comment._id,userId:user._id });
-    } catch (err) {
-    } finally {
-      setDeleteLoading(false)
-      setPopOverOpen(false);
-    }
-  };
+//  console.log("state comment=========",comment)
   return (
-    <CommentContainer open={open} showEditOptions={user._id===comment.userId}>
+    <CommentContainer open={open} showEditOptions={user._id===comment.userId && !comment.isSystemGenerated}>
       <Box className="comment_details">
         <Box className="comment_content">
           <Avatar
@@ -132,7 +121,7 @@ const CommentViewBox = ({ comment}) => {
               {`${dateFormatTime(comment?.createdAt)}`}
             </Typography>
             <Box>
-              {stateComment._id === comment._id && user._id=== comment.userId? (
+              {stateComment._id === comment._id && user._id=== comment.userId ? (
                 <EditComment />
               ) : (
                 <Typography variant="body2" className="comment_text">
@@ -180,7 +169,7 @@ const CommentViewBox = ({ comment}) => {
                 <Button
                   disabled={deleteLoading}
                   variant="contained"
-                  onClick={handleDelete}
+                  onClick={()=>{handleDelete(comment)}}
                 >
                   Yes
                 </Button>

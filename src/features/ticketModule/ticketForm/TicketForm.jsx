@@ -21,7 +21,7 @@ import {
 } from "../../../apis/apiSlice";
 import useStore from "../../../store";
 import { FileUploader } from "../../../components";
-import { dateFormat, handleReturnUpdatedValues } from "../../../utils";
+import { assignedToAddInitialObject, dateFormat, handleReturnUpdatedValues } from "../../../utils";
 import { CloudUpload, Delete } from "@mui/icons-material";
 import { statusCollection } from "../../../data";
 import { NotAssigned } from "../../../helper";
@@ -59,6 +59,7 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
       isSuccess: roomsSuccess,
     },
   ] = apiSlice.endpoints.getRooms.useLazyQuery(useGetRoomsQuery); // Replace with your actual query
+  console.log("initial==",initialValues)
   const formik = useFormik({
     initialValues: {
       ...initialValues,
@@ -71,7 +72,6 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
     validationSchema: validationSchema,
     validateOnMount: true,
     onSubmit: async (values) => {
-      debugger
       if (edit) {
        
         let finalValues = handleReturnUpdatedValues(initialValues, values);
@@ -79,28 +79,28 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
           ...values.issueLocation,
           unit: unitOption,
         };
-        console.log("final val=", finalValues);
         if(imgFiles.length){
           finalValues.images=imgFiles
         }
         handleOnFinish({ ...finalValues,_id:values._id });
       } else {
-        values.issueLocation = {
+        const payload={...values}
+        payload.issueLocation = {
           ...values.issueLocation,
           unit: unitOption,
         };
-        handleOnFinish({ ...values, images: imgFiles });
+        handleOnFinish({ ...payload, images: imgFiles });
       }
     },
   });
-   console.log("initial values",initialValues)
+  //  console.log("initial values",initialValues)
   useEffect(() => {
     if (formik.values.issueLocation.unit && unitOption._id) {
       
       fetchUserData(unitOption._id);
     }
   }, [unitOption]);
-
+console.log("formik===",formik.values.issueLocation)
   return (
     <Box sx={{ maxWidth: 800, mx: "auto" }}>
       {technicianLoading && (
@@ -129,6 +129,7 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
                 id="issue"
                 name="issue"
                 label="Issue"
+                required
                 value={formik.values.issue}
                 onChange={formik.handleChange}
                 error={formik.touched.issue && Boolean(formik.errors.issue)}
@@ -159,10 +160,12 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
                 id="status"
                 name="status"
                 label="Status"
+                required={true}
                 value={formik.values.status}
                 onChange={formik.handleChange}
                 error={formik.touched.status && Boolean(formik.errors.status)}
                 helperText={formik.touched.status && formik.errors.status}
+                disabled={true}
               >
                 {statusCollection.map((option) => (
                   <MenuItem key={option} value={option}>
@@ -188,10 +191,7 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
                 // helperText={formik.touched.status && formik.errors.status}
               >
                 {!technicianLoading ? (
-                  [
-                    { name: NotAssigned, _id: "NotAssigned" },
-                    ...technicians,
-                  ].map((option) => (
+                 assignedToAddInitialObject(technicians).map((option) => (
                     <MenuItem key={option.name} value={option._id}>
                       {option.name}
                     </MenuItem>
@@ -208,6 +208,7 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
                 id="description"
                 name="description"
                 label="Description"
+                required={true}
                 multiline
                 rows={4}
                 value={formik.values.description}
@@ -280,6 +281,7 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
                 fullWidth
                 id="issueLocation.unit"
                 name="issueLocation.unit"
+                required={true}
                 label="Unit"
                 // SelectProps={{
                 //   value: ""
@@ -327,6 +329,7 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
                   fullWidth
                   id="issueLocation.room"
                   name="issueLocation.room"
+                  required={true}
                   label="Room"
                   // SelectProps={{
                   //   value: ""

@@ -82,11 +82,11 @@ export const apiSlice = createApi({
     }),
     addComment: builder.mutation({
       query: (payload) => {
-        const { ticketId, userId, text, images, createdAt } = payload;
+        const { ticketId, userId, text, images, createdAt,isSystemGenerated } = payload;
         return {
           url: `/comment/${ticketId}`,
           method: "POST",
-          body: { userId, text, images, createdAt },
+          body: { userId, text, images, createdAt,isSystemGenerated },
         };
       },
     }),
