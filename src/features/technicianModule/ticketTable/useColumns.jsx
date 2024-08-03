@@ -41,11 +41,11 @@ export const useColumns = (handleDrawer, rowModesModel, setRowModesModel) => {
     // }
   };
   return [
-    // {
-    //   field: "_id",
-    //   headerName: "SNO",
-    //   flex: 1, // Make it flexible
-    // },
+    {
+      field: "ticketNo",
+      headerName: "Ticket No",
+      flex: 1, // Make it flexible
+    },
     {
       field: "name",
       headerName: "Name",

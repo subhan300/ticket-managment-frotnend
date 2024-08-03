@@ -1,6 +1,6 @@
 import  React,{useEffect,useState} from "react";
 import Box from "@mui/material/Box";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import { columns, data,} from "./columns";
 import TicketDrawer from "../editTicket/EditTicketForm";
 import { CircularProgress, useTheme } from "@mui/material";
@@ -9,6 +9,7 @@ import { useGetTicketsByUserIdQuery } from "../../../apis/apiSlice";
 import useCommentStore from "../../comment/store/CommentStore";
 import useUserStore from "../store/UserStore";
 import { useDemoData } from '@mui/x-data-grid-generator';
+import { GridToolbar } from "@mui/x-data-grid";
 const initialValue = {
   userId: "12345", // Replace with actual user ID
   issue: "Network connectivity issue in conference room A",
@@ -32,6 +33,35 @@ export default function TicketTable() {
   const {data:ticketsData,setData, setTicket}=useUserStore(state=>state)
   const { isLoading, data ,isSuccess} = useGetTicketsByUserIdQuery(user._id);
   const {setTicketId,setCommentList}=useCommentStore(state=>state)
+  // const handleFilterChange = (columnField, value) => {
+  //   console.log("colmn",columnField,"value",value)
+  //   let filterData;
+  //  if(value){
+  //   filterData=data.filter(val=>{
+  //     // debugger
+  //     console.log("status",val.status.toLowerCase(),"===",value)
+  //     return val.status.toLowerCase()===value
+  //   })
+  //  }else{
+  //   filterData=data
+  //  }
+   
+  //   setData(filterData)
+  // };
+
+  const handleFilterChange = (columnField, values) => {
+    console.log("column", columnField, "values", values);
+    let filterData;
+    if (!values.includes("")) {
+      filterData = data.filter((val) => {
+        debugger
+        return values.includes(val[columnField].toLowerCase())
+      });
+    } else {
+      filterData = data;
+    }
+    setData(filterData);
+  };
   const handleDrawer = (value) => {
    if(value){
     setTicketId(value._id)
@@ -43,18 +73,17 @@ export default function TicketTable() {
    }
 
   };
-
+  const CustomToolbar = () => (
+    <GridToolbarContainer sx={{padding:"6px 0 0 0",display:"flex",justifyContent:"flex-end"}}>
+      <GridToolbarQuickFilter />
+      {/* You can add more elements here if needed */}
+    </GridToolbarContainer>
+  );
   useEffect(()=>{
      if(isSuccess){
          setData(data)
      }
   },[isSuccess])
-  const { data:dataDemo } = useDemoData({
-    dataSet: 'Commodity',
-    rowLength: 30,
-    maxColumns: 6,
-  });
-
 
   console.log("islaoding",isLoading)
   return (
@@ -66,28 +95,7 @@ export default function TicketTable() {
         />
       )}
       <Box sx={{ width: "100%",overflowX: "auto",  }}>
-      {/* <DataGrid
-        {...dataDemo}
-        loading={isLoading}
-        slotProps={{
-          loadingOverlay: {
-            variant: 'linear-progress',
-            noRowsVariant: 'linear-progress',
-          },
-        }}
-            initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
-          }}
-          disableColumnResize={true}
-          pageSizeOptions={[5]}
-          disableColumnMenu={true}
-          disableRowSelectionOnClick
-          disableColumnSelector
-      /> */}
+    
         <DataGrid
           sx={{
             overflowX: "auto", // Enable horizontal scrolling
@@ -99,14 +107,18 @@ export default function TicketTable() {
           loading={isLoading}
           rows={ticketsData}
           getRowId={(row) => row?._id}
+          slots={{ toolbar: CustomToolbar }} // Use CustomToolbar
           slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
             loadingOverlay: {
               variant: 'linear-progress',
               noRowsVariant: 'skeleton',
             },
           }}
-        
-          columns={columns(handleDrawer)}
+          sortingOrder={['desc', 'asc']}
+          columns={columns(handleDrawer,handleFilterChange)}
           // initialState={{
           //   pagination: {
           //     paginationModel: {

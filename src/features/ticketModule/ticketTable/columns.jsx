@@ -1,15 +1,23 @@
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+
 import dayjs from "dayjs";
 import { NotAssigned } from "../../../helper";
+import FilterComponent from "../../../components/filterComponents/FilterComponents";
+import { Typography } from "@mui/material";
 
-
-export const columns = (handleDrawer) => [
-  // {
-  //   field: "_id",
-  //   headerName: "SNO",
-  //   flex: 1, // Make it flexible
-  // },
+const dateFormatter = new Intl.DateTimeFormat('fr-FR', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+export const columns = (handleDrawer,handleFilterChange) => [
+  
+  {
+    field: "ticketNo",
+    headerName: "Ticket No",
+    flex: 1, // Make it flexible
+  },
   {
     field: "name",
     headerName: "Name",
@@ -34,22 +42,44 @@ export const columns = (handleDrawer) => [
     field: "issue",
     headerName: "Issue",
     flex: 2,
+    sortable:false,
   },
-  {
-    field: "description",
-    headerName: "Description",
-    flex: 3,
-  },
+  // {
+  //   field: "description",
+  //   headerName: "Description",
+  //   flex: 3,
+  // },
   {
     field: "status",
     headerName: "Status",
-    flex: 1,
+    flex: 2,
+    sortable:false,
+    renderHeader: () => (
+      <div  style={{ display: 'flex', alignItems: 'center' }}>
+       <Typography variant="body2" sx={{fontWeight:"bold"}}>Status</Typography>
+        <FilterComponent
+          columnField="status"
+          filterOptions={[
+            { label: 'Remove Filter', value: '' },
+            { label: 'Progress', value: 'progress' },
+            { label: 'Open', value: 'open' },
+            { label: 'Complete', value: 'complete' },
+          ]}
+          onFilterChange={handleFilterChange}
+        />
+      </div>
+    ),
   },
   {
     field: "createdAt",
     headerName: "Created At",
     flex: 1,
-    valueGetter: (params) => dayjs(params.value).format("YYYY-MM-DD"),
+    // valueGetter: (params) => {console.log("params",params)
+    //   return dayjs(params.value).unix()
+      
+    // }, // Use raw date value for sorting
+    renderCell: (params) => dayjs(params.value).format('YYYY-MM-DD'), // Format
+    valueFormatter: (value) => dateFormatter.format(dayjs(value)),
   },
   {
     field: "actions",
@@ -66,6 +96,7 @@ export const columns = (handleDrawer) => [
 ];
 
 export const data = [
+  
   {
     id: "1",
     userName: "John Doe",
@@ -152,14 +183,3 @@ export const data = [
   },
 ];
 
-// export const details = {
-//   id: "1",
-//   userName: "John Doe",
-//   userEmail: "john@example.com",
-//   userRole: "user",
-//   issue: "Login Issue",
-//   description: "Unable to login to the system",
-//   status: "OPEN",
-//   createdAt: "2023-01-01T10:00:00Z",
-//   updatedAt: "2023-01-02T11:00:00Z",
-// };
