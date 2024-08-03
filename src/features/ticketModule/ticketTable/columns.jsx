@@ -16,22 +16,28 @@ export const columns = (handleDrawer,handleFilterChange) => [
   {
     field: "ticketNo",
     headerName: "Ticket No",
-    flex: 1, // Make it flexible
+    // flex: 1, // Make it flexible
+    width:150,
+   
+  
   },
   {
     field: "name",
     headerName: "Name",
-    flex: 2, // Make it flexible with a larger factor
+    // flex: 2, // Make it flexible with a larger factor
+    width:160,
   },
   {
     field: "email",
     headerName: "Email",
-    flex: 2,
+    // flex: 2,
+    width:170,
   },
   {
     field: "assignedTo",
     headerName: "Assigned To",
-    flex:2,
+    // flex:2,
+    width:170,
     valueGetter: ({name}) => {
       return name?name :NotAssigned
     },
@@ -41,18 +47,20 @@ export const columns = (handleDrawer,handleFilterChange) => [
   {
     field: "issue",
     headerName: "Issue",
-    flex: 2,
+    // flex: 2,
+    width:170,
     sortable:false,
   },
   // {
   //   field: "description",
   //   headerName: "Description",
-  //   flex: 3,
+  //   flex: 170,
   // },
   {
     field: "status",
     headerName: "Status",
-    flex: 2,
+    // flex: 2,
+    width:170,
     sortable:false,
     renderHeader: () => (
       <div  style={{ display: 'flex', alignItems: 'center' }}>
@@ -73,7 +81,8 @@ export const columns = (handleDrawer,handleFilterChange) => [
   {
     field: "createdAt",
     headerName: "Created At",
-    flex: 1,
+    // flex: 1,
+    width:170,
     // valueGetter: (params) => {console.log("params",params)
     //   return dayjs(params.value).unix()
       
@@ -84,7 +93,8 @@ export const columns = (handleDrawer,handleFilterChange) => [
   {
     field: "actions",
     headerName: "Actions",
-    flex: 1,
+    // flex: 1,
+    width:90,
     renderCell: (params) => (
       <GridActionsCellItem
         icon={<VisibilityIcon />}
