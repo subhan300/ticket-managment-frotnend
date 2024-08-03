@@ -119,13 +119,14 @@ export default function TicketTable() {
           }}
           sortingOrder={['desc', 'asc']}
           columns={columns(handleDrawer,handleFilterChange)}
-          // initialState={{
-          //   pagination: {
-          //     paginationModel: {
-          //       pageSize: 5,
-          //     },
-          //   },
-          // }}
+          rowsPerPage={5}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
           disableColumnResize={true}
           pageSizeOptions={[5]}
           disableColumnMenu={true}

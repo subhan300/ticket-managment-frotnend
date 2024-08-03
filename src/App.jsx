@@ -1,5 +1,5 @@
 // import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
 // import Dashboard from '../components/Dashboard';
 // import ManagerDashboard from '../components/ManagerDashboard';
@@ -37,10 +37,16 @@ const App = () => {
        
         <Route component={<NotFound />} path="*" />
         <Route
-          element={isAuthenticated ?DashboardSelect(user?.role) : <Login />}
+          element={isAuthenticated ?<Navigate to="/home" /> : <Login />}
           path="/"
 
         />
+         <Route
+          element={isAuthenticated ?DashboardSelect(user?.role) : <Login />}
+          path="/home"
+
+        />
+
         
          <Route
           element={<PrivateRoute currentRoute={USER}><Tickets /></PrivateRoute>}
@@ -61,6 +67,14 @@ const App = () => {
           <Route
           element={<PrivateRoute currentRoute={MANAGER}><ManagerTickets /></PrivateRoute>}
           path={`/${MANAGER.toLowerCase()}/tickets`}
+        />
+           <Route
+          element={<PrivateRoute currentRoute={MANAGER}><ManagerTickets /></PrivateRoute>}
+          path={`/${MANAGER.toLowerCase()}/users`}
+        />
+         <Route
+          element={<PrivateRoute currentRoute={MANAGER}><ManagerTickets /></PrivateRoute>}
+          path={`/${MANAGER.toLowerCase()}/inventory`}
         />
          <Route
           element={<PrivateRoute currentRoute={TECHNICIAN}><Tickets /></PrivateRoute>}
