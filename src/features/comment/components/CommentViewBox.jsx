@@ -103,7 +103,6 @@ const CommentViewBox = ({ comment}) => {
   const handleEdit = () => {
     setComment(comment);
   };
-//  console.log("state comment=========",comment)
   return (
     <CommentContainer open={open} showEditOptions={user._id===comment.userId && !comment.isSystemGenerated}>
       <Box className="comment_details">

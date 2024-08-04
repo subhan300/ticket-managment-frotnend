@@ -42,7 +42,6 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
   const [editTicket, result] = useEditTicketMutation();
   const { isLoading, isSuccess } = result;
   const { setEditData, ticket: initialValues } = useUserStore((state) => state);
-  // console.log("initial values=============>", initialValues);
   const {
     issue,
     images,
@@ -51,7 +50,6 @@ const EditTicketForm = ({ isOpen, handleDrawer }) => {
     status,
     issueLocation,
   } = initialValues;
-  console.log("issur",issueLocation)
   const handleOnFinish = async (values) => {
     try {
       if (values.images) {

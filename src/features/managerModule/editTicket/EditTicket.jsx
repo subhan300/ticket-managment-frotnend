@@ -194,7 +194,6 @@ const EditTicket = ({ isOpen, handleDrawer }) => {
     }
   }, [isSuccess]);
 
-  // console.log("formik inventory",formikInventory.values.inventoryUsed)
   return (
     <FullWidthDrawer
       anchor="right"

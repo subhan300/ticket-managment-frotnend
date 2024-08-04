@@ -1,12 +1,11 @@
 // apiSlice.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getLocalItem } from "../utils";
-
 export const apiSlice = createApi({
   reducerPath: "api",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3977/api",
+    baseUrl: process.env.REACT_APP_BACKEND_URL,
     prepareHeaders: (headers) => {
       const token = getLocalItem("user")?.token;
       if (token) {
@@ -73,7 +72,6 @@ export const apiSlice = createApi({
     }),
     editTicket: builder.mutation({
       query: (payload) => {
-        console.log("id-===", "payload==", payload);
         return {
           url: `/ticket/update/${payload._id}`,
           method: "PUT",

@@ -32,7 +32,6 @@ const handleQuantityChange = (id, val) => {
       // name="inventoryUsed"
       // onChange={formikInventory.handleChange}
       renderValue={(selected) => {
-        console.log("selected",selected)
         return selected
           .map((val) => {
             const selectedProduct = inventoryItems.find(

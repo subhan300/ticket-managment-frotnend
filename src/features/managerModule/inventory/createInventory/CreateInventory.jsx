@@ -41,14 +41,12 @@ export default function CreateInventory({ isOpen, handleTicketDialog }) {
     }
 
     const { error, data } = await createInventory({ ...values });
-    console.log("data====", data);
     if (data) {
       openAlert("Inventory is Successfully Created");
       handleTicketDialog(false);
 
       setData("inventories", [data, ...inventories]);
     } else {
-      console.log(error.data.error);
       openAlert("Failed to create Inventory", "error");
     }
   };

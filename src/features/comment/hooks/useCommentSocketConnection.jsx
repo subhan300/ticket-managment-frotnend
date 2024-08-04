@@ -13,7 +13,6 @@ const UseCommentSocketConnection = () => {
         });
         
         socket.on('initialComments', (initialComments) => {
-            console.log("inital",initialComments)
             setCommentList(initialComments);
         });
 

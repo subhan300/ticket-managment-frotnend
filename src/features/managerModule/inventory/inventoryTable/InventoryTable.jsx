@@ -47,7 +47,6 @@ export default function InventoryTable() {
    const {inventories,setData}=useInventoryStore()
    const {data,isLoading,isSuccess}=useGetInventoryItemsDetailsQuery()
   const {setTicketId, setCommentList} = useCommentStore((state) => state);
-  console.log("data",data,"inventories",inventories)
   const handleDrawer = (value) => {
     if(value){
     setTicketId(value._id);

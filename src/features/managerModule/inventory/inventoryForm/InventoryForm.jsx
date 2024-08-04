@@ -40,12 +40,9 @@ const InventoryForm = ({ initialValues, handleOnFinish, edit }) => {
     validationSchema: validationSchema,
     validateOnMount: true,
     onSubmit: async (values) => {
-        console.log("img files",imgFiles)
-        console.log("values===",values)
         handleOnFinish(values, imgFiles);
     },
   });
-  console.log("formik values==",formik.values)
 
   return (
     <Box sx={{ maxWidth: 800, mx: "auto" }}>

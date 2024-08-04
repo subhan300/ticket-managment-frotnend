@@ -97,12 +97,8 @@ export const  extractToken=(token,openAlert)=>{
 try{
   if(!token) return
   const decodedData = jwtDecode(token);
-  console.log("decoded data",decodedData)
   const {productName,productImages,description,quantity,category}=decodedData;
   if(!productImages || !productName || !description || !quantity || !category){
-
-    console.log("null")
-   
     return 
   }
   

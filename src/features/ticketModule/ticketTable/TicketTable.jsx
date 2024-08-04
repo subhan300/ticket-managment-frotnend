@@ -50,11 +50,9 @@ export default function TicketTable() {
   // };
 
   const handleFilterChange = (columnField, values) => {
-    console.log("column", columnField, "values", values);
     let filterData;
     if (!values.includes("")) {
       filterData = data.filter((val) => {
-        debugger
         return values.includes(val[columnField].toLowerCase())
       });
     } else {
@@ -85,7 +83,6 @@ export default function TicketTable() {
      }
   },[isSuccess])
 
-  console.log("islaoding",isLoading)
   return (
     <>
       {isOpen && (

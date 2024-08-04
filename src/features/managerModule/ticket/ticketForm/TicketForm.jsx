@@ -59,7 +59,6 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
       isSuccess: roomsSuccess,
     },
   ] = apiSlice.endpoints.getRooms.useLazyQuery(useGetRoomsQuery); // Replace with your actual query
-  console.log("initial==",initialValues)
   const formik = useFormik({
     initialValues: {
       ...initialValues,
@@ -93,14 +92,12 @@ const TicketForm = ({ initialValues, handleOnFinish, edit }) => {
       }
     },
   });
-  //  console.log("initial values",initialValues)
   useEffect(() => {
     if (formik.values.issueLocation.unit && unitOption._id) {
       
       fetchUserData(unitOption._id);
     }
   }, [unitOption]);
-console.log("formik===",formik.values.issueLocation)
   return (
     <Box sx={{ maxWidth: 800, mx: "auto" }}>
       {technicianLoading && (
@@ -309,7 +306,6 @@ console.log("formik===",formik.values.issueLocation)
                         onClick={(e) => {
                           formik.setFieldValue("issueLocation.room", "");
                           setUnitOption(option);
-                          // console.log("menue=====",e)
                         }}
                         key={option.name}
                         value={option._id}

@@ -2,8 +2,9 @@ import { defineConfig } from 'vite'
 import postcss from './postcss.config.cjs'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import dotenv from 'dotenv';
 
-// https://vitejs.dev/config/
+dotenv.config();
 export default defineConfig({
   base: 'https://ticket-managment-frotnend.vercel.app/',
   server: {

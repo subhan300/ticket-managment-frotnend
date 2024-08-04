@@ -34,7 +34,6 @@ const LoginPage = () => {
     onSubmit: async (values) => {
       try {
         const user = await login({ email: values.email, password: values.password }).unwrap();
-        console.log("user response",user)
        setUserAuthenticated(user);
        openAlert("Login Successfully")
         navigate("/")

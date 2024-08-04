@@ -74,7 +74,6 @@ const Comments = ({ ticketId, comments: initialComments, userId }) => {
         socket.emit('joinTicketRoom', ticketId);
 
         socket.on('commentAdded', (updatedComments) => {
-            console.log("updated",updatedComments)
             setComments(updatedComments);
         });
 

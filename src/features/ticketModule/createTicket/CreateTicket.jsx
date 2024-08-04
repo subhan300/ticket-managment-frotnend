@@ -31,15 +31,12 @@ export default function CreateTicket({ isOpen, handleTicketDialog }) {
   const handleOnFinish = async (values) => {
     const uploadedImages = await uploadToCloudinary(values.images);
     const  {error,data}=await createTicket({ ...values ,images: uploadedImages });
-    console.log("data====",data)
-    debugger
     if(data){
       openAlert("Ticket is Successfully Created")
       handleTicketDialog(false);
       
       setData([data,...ticketsData])
     }else{
-      console.log(error.data.error)
       openAlert("Failed to create Ticket",'error')
     }
   };
