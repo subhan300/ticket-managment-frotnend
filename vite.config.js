@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 export default defineConfig({
-  base: 'https://ticket-managment-frotnend.vercel.app/',
+  base: 'https://ticket-managment-frotnend.vercel.app',
   server: {
     // Ensure HMR is enabled
     // hmr: true,
