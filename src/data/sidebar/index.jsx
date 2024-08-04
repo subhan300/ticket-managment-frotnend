@@ -128,8 +128,8 @@ export const OrdersData = [
 // }
 
 export const ticketInitialValues = {
-  issue: "issue",
-  description: "issue ind escription",
+  issue: "",
+  description: "",
   images: [],
   status: "OPEN",
   assignedTo: { _id: NotAssignedId, name: NotAssigned },
