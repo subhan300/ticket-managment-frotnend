@@ -8,6 +8,20 @@ dotenv.config();
 export default defineConfig({
   base: 'https://ticket-managment-frotnend.vercel.app',
   server: {
+    cors: true,
+    proxy: {
+      '/api': {
+        target: 'https://ticket-management-backend-mu.vercel.app',
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            proxyReq.setHeader('origin', 'https://ticket-managment-frotnend.vercel.app');
+          });
+        },
+      },
+    },
+  
     // Ensure HMR is enabled
     // hmr: true,
     // Specify the port if needed
@@ -19,6 +33,19 @@ export default defineConfig({
   css: {
     postcss,
   },
+  
+    "headers": [
+      {
+        "source": "/api/(.*)",
+        "headers": [
+          { "key": "Access-Control-Allow-Credentials", "value": "true" },
+          { "key": "Access-Control-Allow-Origin", "value": "*" },
+          { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
+          { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
+        ]
+      }
+    ]
+  ,
   plugins: [react()],
   resolve: {
     alias: {
