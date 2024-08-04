@@ -11,6 +11,7 @@ export const apiSlice = createApi({
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }
+      headers.set("Access-Control-Allow-Origin", "*"); 
       return headers;
     },
   }),
