@@ -50,7 +50,19 @@ export const apiSlice = createApi({
       // providesTags: ["ticket"],
     })
     ,
-
+    getInventoryItemsDetails: builder.query({
+      query: () => `/inventory/company/compantId`,
+      // providesTags: ["ticket"],
+    })
+    ,
+    createInventory: builder.mutation({
+      query: (payload) => ({
+        url: `/inventory/create/companyId`,
+        method: "POST",
+        body: payload,
+      }),
+      // invalidatesTags: ["ticket"], // Invalidate 'Ticket' tag on successful mutation
+    }),
     createTicket: builder.mutation({
       query: (payload) => ({
         url: `/ticket/create/`,
@@ -116,5 +128,7 @@ export const {
   useEditCommentMutation,
   useDeleteCommentMutation,
   useAddCommentMutation,
-  useGetInventoryItemsQuery
+  useGetInventoryItemsQuery,
+  useCreateInventoryMutation,
+  useGetInventoryItemsDetailsQuery
 } = apiSlice;

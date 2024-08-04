@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import {jwtDecode} from 'jwt-decode';
 import { TechnicianSideBar, adminSideBar, managerSideBar, userSideBar } from "../data/sidebar";
 import { ADMIN, HOUSEKEEPING, MANAGER, NotAssigned, TECHNICIAN, USER } from "../helper/constants";
 import Admin from "../pages/Admin";
@@ -88,4 +89,27 @@ export const handleReturnUpdatedValues = (initialValues, values) => {
 export const assignedToAddInitialObject=(data)=>{
    return [{ name: NotAssigned, _id: "NotAssigned" },
     ...data]
+}
+
+
+export const  extractToken=(token,openAlert)=>{
+  // debugger
+try{
+  if(!token) return
+  const decodedData = jwtDecode(token);
+  console.log("decoded data",decodedData)
+  const {productName,productImages,description,quantity,category}=decodedData;
+  if(!productImages || !productName || !description || !quantity || !category){
+
+    console.log("null")
+   
+    return 
+  }
+  
+  return decodedData;
+}catch(err){
+  openAlert("Error in extracting data","error")
+  console.log(err)
+}
+
 }

@@ -19,7 +19,7 @@ import { flexBetween,flexCenter,AuthBox } from '../styles-components';
 
 const LoginPage = () => {
   const [login, { isLoading }] = useLoginMutation();
-  const setUserAuthenticated = useStore((state) => state.setUserAuthenticated);
+  const {setUserAuthenticated,openAlert} = useStore((state) => state);
   const navigate=useCustomNavigate()
   const formik = useFormik({
     initialValues: {
@@ -36,9 +36,12 @@ const LoginPage = () => {
         const user = await login({ email: values.email, password: values.password }).unwrap();
         console.log("user response",user)
        setUserAuthenticated(user);
+       openAlert("Login Successfully")
         navigate("/")
+
       } catch (error) {
         console.error('Failed to login:', error);
+        openAlert("Failed To Login","error")
       }
     },
   });

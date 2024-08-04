@@ -14,3 +14,6 @@ export const minSideWidth="100"
 export const maxSideWidth="200"
 export const NotAssigned="Not Assigned"
 export const NotAssignedId="NotAssigned"
+export const InStock="In Stock"
+export const OutOfStock="Out of Stock"
+export const LowStock='Low Stock'

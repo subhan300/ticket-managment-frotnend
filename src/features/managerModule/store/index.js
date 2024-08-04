@@ -1,3 +1,3 @@
-import useTechnicianStore from "./TechnicianStore";
+import { useTechnicianStore } from "../../technicianModule/store";
 
-export {useTechnicianStore}
+export {useTechnicianStore} 

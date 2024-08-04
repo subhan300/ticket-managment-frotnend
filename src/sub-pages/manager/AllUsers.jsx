@@ -2,7 +2,7 @@
 
 function AllUsers() {
     return (
-      <div>AllUsers</div>
+      <div>coming soon,from here manager can create users,edit users </div>
     )
   }
   

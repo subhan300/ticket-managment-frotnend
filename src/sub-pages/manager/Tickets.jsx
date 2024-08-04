@@ -2,7 +2,7 @@
 
 function Tickets() {
     return (
-      <div>ticket</div>
+      <div>Page is in progess, from here manager can create,edit tickets</div>
     )
   }
   

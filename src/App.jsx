@@ -12,13 +12,11 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { DashboardSelect } from "./utils";
 import {  MANAGER, TECHNICIAN, USER } from "./helper/constants";
-import {AllUsers} from "./sub-pages/manager";
-import {ManagerTickets} from "./sub-pages/manager";
+import {ManagerTickets,AllUsers,Inventory} from "./sub-pages/manager";
 import { CompanyInfo } from "./sub-pages/common";
 import {Tickets} from "./sub-pages/technician";
 import useStore from "./store";
 import Alert from "./components/GlobalComponents/alert/Alert";
-import { useEffect } from "react";
 
 const App = () => {
 
@@ -56,10 +54,7 @@ const App = () => {
           element={<PrivateRoute currentRoute={user?.role}><CompanyInfo /></PrivateRoute>}
           path={`/${USER.toLowerCase()}/company`}
         />
-          <Route
-          element={<PrivateRoute currentRoute={MANAGER}><Tickets /></PrivateRoute>}
-          path={`/${MANAGER.toLowerCase()}/tickets`}
-        />
+        
           <Route
           element={<PrivateRoute currentRoute={MANAGER}><CompanyInfo /></PrivateRoute>}
           path={`/${MANAGER.toLowerCase()}/company`}
@@ -69,12 +64,20 @@ const App = () => {
           path={`/${MANAGER.toLowerCase()}/tickets`}
         />
            <Route
-          element={<PrivateRoute currentRoute={MANAGER}><ManagerTickets /></PrivateRoute>}
+          element={<PrivateRoute currentRoute={MANAGER}><AllUsers /></PrivateRoute>}
           path={`/${MANAGER.toLowerCase()}/users`}
         />
          <Route
-          element={<PrivateRoute currentRoute={MANAGER}><ManagerTickets /></PrivateRoute>}
+          element={<PrivateRoute currentRoute={MANAGER}><Inventory /></PrivateRoute>}
           path={`/${MANAGER.toLowerCase()}/inventory`}
+        />
+          <Route
+          element={<PrivateRoute currentRoute={MANAGER}><Inventory /></PrivateRoute>}
+          path={`/${MANAGER.toLowerCase()}/inventory/create/:data`}
+        />
+         <Route
+          element={<PrivateRoute currentRoute={MANAGER}><Inventory /></PrivateRoute>}
+          path={`/${MANAGER.toLowerCase()}/inventory/create/`}
         />
          <Route
           element={<PrivateRoute currentRoute={TECHNICIAN}><Tickets /></PrivateRoute>}

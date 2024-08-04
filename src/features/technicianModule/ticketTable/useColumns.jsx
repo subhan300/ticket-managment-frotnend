@@ -61,7 +61,7 @@ export const useColumns = (handleDrawer, rowModesModel, setRowModesModel) => {
       field: "assignedToColumn",
       headerName: "Assigned To",
       flex: 2,
-      editable: true,
+      // editable: true,
       type: "singleSelect",
       valueOptions: [{ name: NotAssigned, _id:NotAssignedId,  }, ...technicians],
       getOptionValue: (option) => option._id,
@@ -83,7 +83,7 @@ export const useColumns = (handleDrawer, rowModesModel, setRowModesModel) => {
       field: "status",
       headerName: "Status",
       flex: 3,
-      editable: true,
+      // editable: true,
       type: "singleSelect",
       valueOptions:statusCollection ,
       valueGetter: (params, row) => {
@@ -130,13 +130,13 @@ export const useColumns = (handleDrawer, rowModesModel, setRowModesModel) => {
         }
 
         return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
+          // <GridActionsCellItem
+          //   icon={<EditIcon />}
+          //   label="Edit"
+          //   className="textPrimary"
+          //   onClick={handleEditClick(id)}
+          //   color="inherit"
+          // />,
           <GridActionsCellItem
             icon={<VisibilityIcon />}
             label="View Details"

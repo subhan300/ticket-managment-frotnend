@@ -129,6 +129,7 @@ const EditTicket = ({ isOpen, handleDrawer }) => {
     },
     onSubmit: async (values) => {
       const { inventoryUsed } = values;
+       debugger
       const editRes = await editTicket({
         inventoryUsed,
         _id: values._id,
@@ -136,7 +137,7 @@ const EditTicket = ({ isOpen, handleDrawer }) => {
       const inventorySelected = [];
       const inventoryMapping = inventoryItems.map((val) => {
         const getIndex = inventoryUsed.findIndex(
-          (item) => item.inventoryId === val._id
+          (item) => item.inventoryId === val.inventoryId
         );
         if (getIndex > 0) {
           inventorySelected.push({
@@ -194,7 +195,7 @@ const EditTicket = ({ isOpen, handleDrawer }) => {
     }
   }, [isSuccess]);
 
-  // console.log("formik inventory",formikInventory.values.inventoryUsed)
+  console.log("formik inventory",inventoryUsed)
   return (
     <FullWidthDrawer
       anchor="right"
@@ -423,7 +424,7 @@ const EditTicket = ({ isOpen, handleDrawer }) => {
                 ) : inventoryUsed.length ? (
                   inventoryUsed.map(
                     (
-                      { productImage, productName, quantityUsed, _id },
+                      { productImages, productName, quantityUsed, _id },
                       index
                     ) => (
                       <Box
@@ -478,7 +479,7 @@ const EditTicket = ({ isOpen, handleDrawer }) => {
                             </Box>
                           </Box>
                           <Box sx={{ width: "120px", height: "70px" }}>
-                            <img alt="Product Image" src={productImage} />
+                            <img alt="Product Image" src={productImages[0]} />
                           </Box>
                         </Box>
                       </Box>

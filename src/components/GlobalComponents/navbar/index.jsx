@@ -208,7 +208,7 @@ export default function Navbar({ drawerWidth, open }) {
                   }}
                 >
                   <span style={{ fontSize: "13px", fontWeight: "bolder",color:"var(--secondary-color)" }}>
-                    {user.name}
+                    {user.name.toUpperCase()}
                   </span>
                   <span style={{ fontSize: "13px", fontWeight: "bolder" ,textTransform:"capitalize",color:"var(--secondary-color)" }}>
                     {user.role.toLowerCase()}
