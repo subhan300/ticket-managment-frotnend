@@ -6,7 +6,6 @@ import StatsCard from "../components/statsCard";
 import { useState } from "react";
 import { flexBetween } from "../styles-components/global-styles/styles";
 import {CreateTicket,TicketTable} from "../features/ticketModule";
-import Comments from "../components/comments/Comments.jsx";
 import useStore from "../store/index.js";
 // import WriteComment from "../features/comment/components/WriteComment.jsx";
 const User = () => {
