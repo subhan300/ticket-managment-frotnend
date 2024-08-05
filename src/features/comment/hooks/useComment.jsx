@@ -28,7 +28,7 @@ const UseComment = () => {
   const [addComment, result] = useAddCommentMutation();
   const [editComment] = useEditCommentMutation();
   const [deleteComment] = useDeleteCommentMutation();
-  const backendUrl = "http://localhost:3977";
+
   const user  = useStore((state) => state.user);
  
   const { uploadToCloudinary } = useUpload();

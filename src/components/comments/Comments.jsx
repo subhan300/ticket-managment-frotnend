@@ -6,7 +6,7 @@ import { CloudUpload, Delete } from '@mui/icons-material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import useUpload from '../../hooks/useUpload';
 // Initialize Socket.io client
-const backendUrl = 'http://localhost:3977';
+const backendUrl = process.env.REACT_APP_BACKEND_SOCKET_URL;
 const socket = io(backendUrl); // Adjust the URL if necessary
 
 const Comments = ({ ticketId, comments: initialComments, userId }) => {
